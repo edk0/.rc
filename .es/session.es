@@ -34,10 +34,12 @@ let (status=) {
             # Set xterm title to PWD
             echo -n \e]\;^$pwd^\a
          }
-         if {result $status} {
-            prompt=('; ' '')
-         } {
+         if {! result $status} {
             prompt=(\001\e[31m\002^'; '^\001\e[0m\002 '')
+         } {%outdated_env} {
+            prompt=(\001\e[30m\e[43m\002^';'^\001\e[0m\002^' ' '')
+         } {
+            prompt=('; ' '')
          }
          status =
       }
