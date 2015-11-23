@@ -1,4 +1,5 @@
-# vim: et sw=3 sts=3 ft=es
+# things we want to run at the beginning of each session.
+# close over status because i don't really want to expose it...
 
 let (status=) {
    fn dispatch-error cmd {
@@ -8,9 +9,8 @@ let (status=) {
          echo -n \e]\;^$pwd^' - '^$cw^\a
       }
       let (result = <={$cmd}) {
-         if {~ $result *[~0-9-]*} {
+         local(r2=) if {~ $result *[~0-9-]*} {
             # Replace whitespace with visible characters.
-            r2 = ()
             for (rr = $result) {
                rr = `` '' {sed -z 's,\n,'^\e^'[34m\\n'^\e^'[0m,g'<<<$rr}
                rr = `` '' {sed -z 's,\t,'^\e^'[34m\\t'^\e^'[0m,g'<<<$rr}
