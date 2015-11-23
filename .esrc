@@ -15,7 +15,6 @@ if {! result $0} {
    ESRC_DIR=`{dirname `{realpath .esrc}}
 }
 
-# dependencies
 . $ESRC_DIR/.es/alias.es
 . $ESRC_DIR/.es/cdpath.es
 . $ESRC_DIR/.es/cd_history.es
@@ -25,22 +24,22 @@ fn filter f { map @{ if {$f $* >/dev/null} {echo $*} } }
 
 cdpath = . ~ ~/src
 
+# run a command even if a function by the same name exists
 fn command name args { local (fn-$name=) {$name $args} }
 
-# shortcuts
-alias q    exit
-alias hc   herbstclient
-alias up   ssh upload
 alias l    ls -CF --color\=auto
+alias hc   herbstclient
+alias q    exit
 alias tt   tee /dev/tty
+alias up   ssh upload
 
 # these commands take commands as an argument; recursive-alias them to
 # themselves so said argument gets expanded if it's an alias.
 local (cmds = (
    command
-   time
    stdbuf
    sudo
+   time
 )) for (cmd=$cmds) { aliasr $cmd $cmd }
 
 # 'env a\=b c\=d command` should expand command as an alias.
