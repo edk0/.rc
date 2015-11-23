@@ -9,8 +9,16 @@
 # make it usable as a command, $fn-NAME is set to $%runalias, which simply
 # looks up the alias by the name it was invoked as, and runs that.
 
+# When an alias is defined, the (non-alias) command it replaced is stored in
+# $-builtin-NAME. While an alias is running, its name is locally mapped to
+# the replaced builtin.
+
 # locally unset fn-$0 to prevent recursive expansion
-%runalias = @ { local (fn-$0=) <= {%expandalias $0 $*} }
+%runalias = @ {
+   local (fn-$0=$(-builtin-$0)) {
+      <= {%expandalias $0 $*}
+   }
+}
 
 # expand an alias (by running -alias-NAME)
 fn %expandalias name args {
@@ -25,8 +33,16 @@ fn %expandalias name args {
 
 # low-level interface: make an alias out of a function that expands its args
 fn %makealias name f {
-   -alias-$name = $f
-   fn-$name = $%runalias
+   if {! result $f} {
+      -alias-$name = $f
+      if {! ~ $(fn-$name) $%runalias} {-builtin-$name = $(fn-$name)}
+      fn-$name = $%runalias
+   } {
+      # special-case empty $f to unbind the command
+      -alias-$name =
+      -builtin-$name =
+      fn-$name =
+   }
    true
 }
 
