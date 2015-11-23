@@ -30,8 +30,14 @@ alias up   ssh upload
 alias l    ls -CF --color\=auto
 alias tt   tee /dev/tty
 
-aliasr time time
-aliasr sudo sudo
+# these commands take commands as an argument; recursive-alias them to
+# themselves so said argument gets expanded if it's an alias.
+local (cmds = (
+   command
+   time
+   stdbuf
+   sudo
+)) for (cmd=$cmds) { aliasr $cmd $cmd }
 
 # 'env a\=b c\=d command` should expand command as an alias.
 %makealias env <={
