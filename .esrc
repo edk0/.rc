@@ -26,6 +26,7 @@ cdpath = . ~ ~/src
 
 fn command name args { local (fn-$name=) {$name $args} }
 
+# shortcuts
 alias q    exit
 alias hc   herbstclient
 alias up   ssh upload
@@ -49,6 +50,8 @@ local (cmds = (
       env
 }
 
+# the idea here is to run .es/session.es at the beginning of every
+# interactive session
 fn %prompt {
    fn %prompt
    . $ESRC_DIR/.es/session.es
