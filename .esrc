@@ -11,7 +11,8 @@ if {! result $0} {
    # inside a `, $0 is '%backquote'
    local (me=$0) ESRC_DIR=`{dirname `{realpath $me}}
 } {
-   ESRC_DIR=.
+   # just assume we're .esrc
+   ESRC_DIR=`{dirname `{realpath .esrc}}
 }
 
 # dependencies
@@ -50,9 +51,28 @@ local (cmds = (
       env
 }
 
+# mechanism for shells post-login to update their environments. new
+# interactive shells will update_env, sourcing this file again if the copy in
+# their environment is old.
+# prompts can use %outdated_env to tell me i should run update_env.
+# all this is a compromise between me wanting to avoid tediously sourcing
+# .esrc myself, avoid sourcing it when unnecessary, and avoid magically
+# breaking all my shells if i screw up
+let (esrc_mtime=`{stat -c%Y $ESRC_DIR/.esrc}) {
+   fn %outdated_env {
+      [ `{stat -c%Y $ESRC_DIR/.esrc} -gt $esrc_mtime ]
+   }
+   fn update_env {
+      if {%outdated_env} {
+         . $ESRC_DIR/.esrc
+      }
+   }
+}
+
 # the idea here is to run .es/session.es at the beginning of every
 # interactive session
 fn %prompt {
+   update_env
    fn %prompt
    . $ESRC_DIR/.es/session.es
    if {! result $fn-%prompt} %prompt
