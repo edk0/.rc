@@ -24,6 +24,8 @@ fn filter f { map @{ if {$f $* >/dev/null} {echo $*} } }
 
 cdpath = . ~ ~/src
 
+fn command name args { local (fn-$name=) {$name $args} }
+
 alias q    exit
 alias hc   herbstclient
 alias up   ssh upload
