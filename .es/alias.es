@@ -50,26 +50,28 @@ fn %makealias name f {
 # isopt and isend are predicates that by default match -* and --
 # these are option detection, so we can try to expand the actual first arg
 # instead of the first option.
-fn %alias_expands isopt_ isend_ args {
-   let (
-      isopt = <={if {result $isopt_} {result @ x {~ $x -*}} {result $isopt_}};
-      isend = <={if {result $isend_} {result @ x {~ $x --}} {result $isend_}};
-   ) {
-      return @ {
-         let (argslist=$args) {
-            for (arg = $*) {
-               if {$isend $arg} {
-                  argslist = ($argslist $arg)
-                  '*' = $*(2 ...)
-                  return $argslist <={%expandalias $*}
-               } {$isopt $arg} {
-                  argslist = ($argslist $arg)
-                  '*' = $*(2 ...)
-               } {
-                  return $argslist <={%expandalias $*}
-               }
+let (
+   # hack to avoid defining a self-referential closure
+   isopt_d = @ x {~ $x -*};
+   isend_d = @ x {~ $x --};
+) fn %alias_expands isopt isend args {
+   isopt = <={if {result $isopt} {result $isopt_d} {result $isopt}};
+   isend = <={if {result $isend} {result $isend_d} {result $isend}};
+   return @ {
+      let (argslist=$args) {
+         for (arg = $*) {
+            if {$isend $arg} {
+               argslist = ($argslist $arg)
+               * = $*(2 ...)
+               break
+            } {$isopt $arg} {
+               argslist = ($argslist $arg)
+               * = $*(2 ...)
+            } {
+               break
             }
          }
+         return $argslist <={%expandalias $*}
       }
    }
 }
