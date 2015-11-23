@@ -4,16 +4,20 @@ EDITOR = vi
 VISUAL = vi
 PAGER = less
 
-local (me=$0; dir=) {
-   if {! result $me} {
-      dir=`{dirname $me}
-   } {
-      dir=.
-   }
-   . $dir/.es/alias.es
-   . $dir/.es/cdpath.es
-   . $dir/.es/cd_history.es
+# find .esrc and resolve symlinks. the location of .es is relative to the
+# directory it is in, so if .esrc is a symlink, .es does not also need to be
+# symlinked.
+if {! result $0} {
+   # inside a `, $0 is '%backquote'
+   local (me=$0) ESRC_DIR=`{dirname `{realpath $me}}
+} {
+   ESRC_DIR=.
 }
+
+# dependencies
+. $ESRC_DIR/.es/alias.es
+. $ESRC_DIR/.es/cdpath.es
+. $ESRC_DIR/.es/cd_history.es
 
 fn map f { let (s=) { while {!%count <={s = <=%read}} {$f <={%split <={%flatten '' $ifs} $s}} } }
 fn filter f { map @{ if {$f $* >/dev/null} {echo $*} } }
@@ -39,8 +43,8 @@ aliasr sudo sudo
 
 fn %prompt {
    fn %prompt
-   . .es/session.es
-   %prompt
+   . $ESRC_DIR/.es/session.es
+   if {! result $fn-%prompt} %prompt
 }
 
 true
