@@ -1,0 +1,46 @@
+# vim: ft=es
+
+EDITOR = vi
+VISUAL = vi
+PAGER = less
+
+local (me=$0; dir=) {
+   if {! result $me} {
+      dir=`{dirname $me}
+   } {
+      dir=.
+   }
+   . $dir/.es/alias.es
+   . $dir/.es/cdpath.es
+   . $dir/.es/cd_history.es
+}
+
+fn map f { let (s=) { while {!%count <={s = <=%read}} {$f <={%split <={%flatten '' $ifs} $s}} } }
+fn filter f { map @{ if {$f $* >/dev/null} {echo $*} } }
+
+cdpath = . ~ ~/src
+
+alias q    exit
+alias hc   herbstclient
+alias up   ssh upload
+alias l    ls -CF --color\=auto
+alias tt   tee /dev/tty
+
+aliasr time time
+aliasr sudo sudo
+
+# 'env a\=b c\=d command` should expand command as an alias.
+%makealias env <={
+   %alias_expands \
+      @ x{~ $x -* *\=*} \
+      0 \
+      env
+}
+
+fn %prompt {
+   fn %prompt
+   . .es/session.es
+   %prompt
+}
+
+true

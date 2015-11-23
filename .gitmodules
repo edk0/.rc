@@ -1,0 +1,12 @@
+[submodule ".vim/bundle/Apprentice"]
+	path = .vim/bundle/Apprentice
+	url = https://github.com/romainl/Apprentice.git
+[submodule ".vim/bundle/idris-vim"]
+	path = .vim/bundle/idris-vim
+	url = https://github.com/idris-hackers/idris-vim.git
+[submodule ".vim/bundle/Unsullied"]
+	path = .vim/bundle/Unsullied
+	url = https://github.com/dahu/Unsullied.git
+[submodule ".vim/bundle/vim-buftabline"]
+	path = .vim/bundle/vim-buftabline
+	url = https://github.com/ap/vim-buftabline.git
