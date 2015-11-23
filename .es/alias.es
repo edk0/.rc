@@ -1,5 +1,3 @@
-# vim: et sw=3 sts=3 ft=es
-
 # Theory:
 # aliases are implemented by functions that return their command expansion.
 # the reason for this choice is mostly that it'd let a more advanced `alias`
