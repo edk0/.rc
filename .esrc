@@ -33,6 +33,15 @@ alias q    exit
 alias tt   tee /dev/tty
 alias up   ssh upload
 
+# git is stupid
+fn git cmd a {
+   if {~ $cmd commit} {
+      command git commit -v $a
+   } {
+      command git $cmd $a
+   }
+}
+
 # these commands take commands as an argument; recursive-alias them to
 # themselves so said argument gets expanded if it's an alias.
 local (cmds = (
