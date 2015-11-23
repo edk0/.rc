@@ -1,1 +1,1 @@
-au BufRead,BufNewFile *.es setfiletype es
+au BufRead,BufNewFile *.es set filetype=es
