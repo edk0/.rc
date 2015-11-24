@@ -5,11 +5,7 @@ VISUAL = vi
 PAGER = less
 
 catch @ {
-   fn realpath p {
-      let (d=`{dirname $p}; b=`{basename $p}) {
-         echo (`` \n {fork {cd ./$d >/dev/null >[2=1]; pwd -P}}) ^ /$b
-      }
-   }
+   fn realpath p { readlink -f $p }
 } {
    %pathsearch realpath
 }

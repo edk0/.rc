@@ -7,14 +7,8 @@
 # install u  to uninstall
 # install f  to install even if it overwrites things
 
-# we need realpath(1). it's not POSIX so here is an implementation using
-# standard utilities.
 catch @ {
-   fn realpath p {
-      let (d=`{dirname $p}; b=`{basename $p}) {
-         echo (`` \n {fork {cd ./$d >/dev/null >[2=1]; pwd -P}}) ^ /$b
-      }
-   }
+   fn realpath p { readlink -f $p }
 } {
    %pathsearch realpath
 }
