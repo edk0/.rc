@@ -26,7 +26,7 @@ fn bat_dbus prop {
 }
 
 fn ftime {
-   date -u -d \@^(`` '' cat) +"%H:%M"
+   date -u -d \@^(`` '' cat) +%H:%M
 }
 
 fn power {
