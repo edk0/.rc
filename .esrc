@@ -4,6 +4,16 @@ EDITOR = vi
 VISUAL = vi
 PAGER = less
 
+catch @ {
+   fn realpath p {
+      let (d=`{dirname $p}; b=`{basename $p}) {
+         echo (`` \n {fork {cd ./$d >/dev/null >[2=1]; pwd -P}}) ^ /$b
+      }
+   }
+} {
+   %pathsearch realpath
+}
+
 # find .esrc and resolve symlinks. the location of .es is relative to the
 # directory it is in, so if .esrc is a symlink, .es does not also need to be
 # symlinked.
