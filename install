@@ -7,6 +7,18 @@
 # install u  to uninstall
 # install f  to install even if it overwrites things
 
+# we need realpath(1). it's not POSIX so here is an implementation using
+# standard utilities.
+catch @ {
+   fn realpath p {
+      let (d=`{dirname $p}; b=`{basename $p}) {
+         echo (`` \n {fork {cd ./$d >/dev/null >[2=1]; pwd -P}}) ^ /$b
+      }
+   }
+} {
+   %pathsearch realpath
+}
+
 if {result $0 || result $HOME} {
    echo Insufficient environment
    exit 1
@@ -36,7 +48,7 @@ if {~ $installpath $HOME/*} {
 
 fn uninstall {
    if {[ -f $HOME/.edk.uninstall.es ]} {
-      $SHELL $HOME/.edk.uninstall.es
+      fork {. $HOME/.edk.uninstall.es}
       rm $HOME/.edk.uninstall.es
    }
 }
