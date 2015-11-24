@@ -1,5 +1,4 @@
 #!/usr/bin/env es
-# vim: ft=es
 
 # create symlinks from $HOME to here.
 # if here is inside $HOME, the links are relative.
@@ -13,7 +12,7 @@ catch @ {
    %pathsearch realpath
 }
 
-if {result $0 || result $HOME} {
+if {result $0 || result $HOME || ~ $HOME /} {
    echo Insufficient environment
    exit 1
 }
@@ -85,6 +84,7 @@ fn link_file n {
 #####
 
 targets = (
+   .config/herbstluftwm
    .esrc
    .gitconfig
    .profile
