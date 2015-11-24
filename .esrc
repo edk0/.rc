@@ -53,6 +53,7 @@ fn git cmd a {
 # themselves so said argument gets expanded if it's an alias.
 local (cmds = (
    command
+   nohup
    stdbuf
    sudo
    time
