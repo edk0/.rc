@@ -1,0 +1,90 @@
+#!/usr/bin/env es
+# vim: ft=es
+
+# create symlinks from $HOME to here.
+# if here is inside $HOME, the links are relative.
+
+# install u  to uninstall
+# install f  to install even if it overwrites things
+
+if {result $0 || result $HOME} {
+   echo Insufficient environment
+   exit 1
+}
+
+if {~ $1 u} {
+   echo Uninstall
+   uninst=y
+}
+
+if {~ $1 f} {
+   echo Force install
+   force=y
+}
+
+local (me=$0) installpath=`{dirname `{realpath $me}}
+
+if {~ $installpath $HOME/*} {
+   linkpath = <={~~ $installpath $HOME/*}
+   echo 'Relative install:' $linkpath
+} {
+   linkpath = $installpath
+   echo 'Absolute install:' $linkpath
+}
+
+#####
+
+fn uninstall {
+   if {[ -f $HOME/.edk.uninstall.es ]} {
+      $SHELL $HOME/.edk.uninstall.es
+      rm $HOME/.edk.uninstall.es
+   }
+}
+
+fn link_file n {
+   echo + $n
+   if {[ -f $HOME/$n ]} {
+      if {! result $#force} {
+         ln -fs $linkpath/$n $HOME/$n
+      } {
+         echo error: $HOME/$n exists
+         return file-exists
+      }
+   } {
+      ln -s $linkpath/$n $HOME/$n
+   }
+   let (path=$HOME/$n) {
+      echo {echo - $n; rm $path} >> $HOME/.edk.uninstall.es
+   }
+}
+
+#####
+
+targets = (
+   .esrc
+   .gitconfig
+   .profile
+   .vim
+   .vimrc
+   .Xresources
+   .xsessionrc
+)
+
+#####
+
+uninstall
+
+if {result $#uninst} {
+   for (target=$targets) {
+      local (r=<={link_file $target}) {
+         if {! result $r} {
+            echo error occurred, uninstalling!
+            uninstall
+            echo failed to install: $r
+            exit $r
+         }
+      }
+   }
+}
+
+echo Done.
