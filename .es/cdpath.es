@@ -19,5 +19,4 @@ fn %is-absolute path { ~ $path /* ./* ../* }
 
 set-cdpath = @{local (set-CDPATH=) CDPATH=<={%flatten : $*}; result $*}
 set-CDPATH = @{local (set-cdpath=) cdpath=<={%fsplit  : $*}; result $*}
-noexport = $noexport cdpath
 cdpath = ''
