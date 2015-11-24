@@ -1,0 +1,7 @@
+[user]
+	email = e@kellett.im
+	name = Ed Kellett
+[push]
+	default = simple
+[alias]
+	pl = log --oneline --all --decorate --graph
