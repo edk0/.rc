@@ -18,6 +18,10 @@ if {result $0 || result $HOME} {
    exit 1
 }
 
+uninst=
+force=
+relative=
+
 if {~ $1 u} {
    echo Uninstall
    uninst=y
@@ -32,6 +36,7 @@ local (me=$0) installpath=`{dirname `{realpath $me}}
 
 if {~ $installpath $HOME/*} {
    linkpath = <={~~ $installpath $HOME/*}
+   relative=y
    echo 'Relative install:' $linkpath
 } {
    linkpath = $installpath
@@ -47,17 +52,30 @@ fn uninstall {
    }
 }
 
+fn relpath f {
+   if {result $relative} return
+   local (t='') {
+      while {~ $f ?*/?*} {
+         f = (<={~~ f ?*/*})(3)
+         t = $t ^ '../'
+      }
+      result $t
+   }
+}
+
 fn link_file n {
    echo + $n
-   if {[ -f $HOME/$n ]} {
-      if {! result $#force} {
-         ln -fs $linkpath/$n $HOME/$n
+   local (linkpath=(<={relpath $n})^$linkpath) {
+      if {[ -f $HOME/$n ]} {
+         if {! result $#force} {
+            ln -fs $linkpath/$n $HOME/$n
+         } {
+            echo error: $HOME/$n exists
+            return file-exists
+         }
       } {
-         echo error: $HOME/$n exists
-         return file-exists
+         ln -s $linkpath/$n $HOME/$n
       }
-   } {
-      ln -s $linkpath/$n $HOME/$n
    }
    let (path=$HOME/$n) {
       echo {echo - $n; rm $path} >> $HOME/.edk.uninstall.es
