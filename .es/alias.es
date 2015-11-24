@@ -74,5 +74,17 @@ let (
    }
 }
 
-fn alias name args { %makealias $name @ { return $args $* } }
-fn aliasr name args { %makealias $name <={%alias_expands 0 0 $args} }
+fn alias name args {
+   if {~ $args ()} {
+      %makealias $name
+   } {
+      %makealias $name @ { return $args $* }
+   }
+}
+fn aliasr name args {
+   if {~ $args ()} {
+      %makealias $name
+   } {
+      %makealias $name <={%alias_expands 0 0 $args}
+   }
+}
