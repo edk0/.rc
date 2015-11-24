@@ -9,11 +9,12 @@ PAGER = less
 # symlinked.
 if {! result $0} {
    # inside a `, $0 is '%backquote'
-   local (me=$0) ESRC_DIR=`{dirname `{realpath $me}}
+   local (me=$0) ESRC_PATH=`{realpath $me}
 } {
    # just assume we're .esrc
-   ESRC_DIR=`{dirname `{realpath .esrc}}
+   ESRC_PATH=`{realpath .esrc}
 }
+ESRC_DIR=`{dirname $ESRC_PATH}
 
 . $ESRC_DIR/.es/alias.es
 . $ESRC_DIR/.es/cdpath.es
@@ -66,13 +67,13 @@ local (cmds = (
 # all this is a compromise between me wanting to avoid tediously sourcing
 # .esrc myself, avoid sourcing it when unnecessary, and avoid magically
 # breaking all my shells if i screw up
-let (esrc_mtime=`{stat -c%Y $ESRC_DIR/.esrc}) {
+let (esrc_mtime=`{stat -c%Y $ESRC_PATH}) {
    fn %outdated_env {
-      [ `{stat -c%Y $ESRC_DIR/.esrc} -gt $esrc_mtime ]
+      [ `{stat -c%Y $ESRC_PATH} -gt $esrc_mtime ]
    }
    fn update_env {
       if {%outdated_env} {
-         . $ESRC_DIR/.esrc
+         . $ESRC_PATH
       }
    }
 }
