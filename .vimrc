@@ -9,6 +9,8 @@ nnoremap <silent> <C-P> :bprev<CR>
 nnoremap <silent> gt :bnext<CR>
 nnoremap <silent> gT :bprev<CR>
 
+set undofile undodir=$HOME/.vim-undo
+
 set laststatus=2
 
 set cursorline
