@@ -5,3 +5,5 @@
 	default = simple
 [alias]
 	pl = log --oneline --all --decorate --graph
+[web]
+	browser = google-chrome
