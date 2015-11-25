@@ -2,6 +2,9 @@ execute pathogen#infect()
 
 set statusline=%f%m%=%l,%v\ %P\ 
 
+" fugitive+es freak out, yay
+set shell=sh
+
 " 'tabs'
 set hidden
 nnoremap <silent> <C-N> :bnext<CR>
