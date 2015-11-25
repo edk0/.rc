@@ -39,7 +39,7 @@ fn power {
 	           $sep ^ `{bat_dbus TimeToFull|ftime}
    } {~ $state discharging} {
       local (tte = `{bat_dbus TimeToEmpty}) \
-      local (colour = <={ }) { if {[ $tte -le 1200 ]} {result $urgent} {result $text}
+      local (colour = <={ if {[ $tte -le 1200 ]} {result $urgent} {result $text} }) {
 	      echo -n '^fg(' ^ $text ^ 'battery' ^ $sep ^ '^fg(' ^ $hilight ^ ')' ^ $pct ^ '%^fg( ' ^ $text ^ ')' ^\
 	              $sep ^ '^fg(' ^ $colour ^ ')' ^ `{echo $tte|ftime}
 	   }
