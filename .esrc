@@ -34,7 +34,11 @@ cdpath = . ~ ~/src
 # run a command even if a function by the same name exists
 fn command name args { local (fn-$name=) {$name $args} }
 
-alias l    ls -CF --color\=auto
+alias ls   ls   --color\=auto
+alias grep grep --color\=auto
+
+alias l    ls -CF
+alias ll   ls -CFA
 alias hc   herbstclient
 alias q    exit
 alias tt   tee /dev/tty
