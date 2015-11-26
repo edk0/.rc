@@ -2,6 +2,8 @@ execute pathogen#infect()
 
 set statusline=%f%m%=%l,%v\ %P\ 
 
+set path=.,**
+
 " fugitive+es freak out, yay
 set shell=sh
 
@@ -20,12 +22,13 @@ set undofile
 set undodir=$HOME/.vim-undo
 set undolevels=5000
 
-set laststatus=2
-
 set cursorline
+set laststatus=2
 set modeline
 set mouse=a
 set number
+set scrolloff=1
+set wildmenu
 
 let g:c_syntax_for_h=1
 
