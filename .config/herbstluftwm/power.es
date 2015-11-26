@@ -1,10 +1,5 @@
 # Talk to UPower about our battery.
 
-hilight='#fefbec'
-text='#a6a28c'
-urgent='#d73737'
-
-
 bat = `{upower -e|grep '/battery'|head -1}
 sep = ', '
 

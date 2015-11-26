@@ -1,7 +1,3 @@
-highlight='#fefbec'
-text='#a6a28c'
-urgent='#d73737'
-
 fn dbus-send a {
    command dbus-send $a >[2] /dev/null
 }
@@ -73,7 +69,7 @@ fn net_state {
       if {~ $conn '/'} {
          echo '^fg(' ^ $urgent ^ ')disconnected'
       } {~ $ap ?*} {
-         echo '^fg(' ^ $text ^ ')' ^ `{net_conn_id $conn} ^ ', ^fg(' ^ $highlight ^ ')' ^ `{net_ap_signal $ap} ^ '%'
+         echo '^fg(' ^ $text ^ ')' ^ `{net_conn_id $conn} ^ ', ^fg(' ^ $hilight ^ ')' ^ `{net_ap_signal $ap} ^ '%'
       } {
          echo '^fg(' ^ $text ^ ')wired'
       }
