@@ -11,6 +11,8 @@ nnoremap <silent> <C-N> :bnext<CR>
 nnoremap <silent> <C-P> :bprev<CR>
 nnoremap <silent> gt :bnext<CR>
 nnoremap <silent> gT :bprev<CR>
+nnoremap <Leader>g :ls<CR>:b *
+nnoremap <Leader>f :find *
 
 nnoremap <silent> vc :GundoToggle<CR>
 
