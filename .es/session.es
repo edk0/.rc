@@ -38,6 +38,8 @@ let (status=) {
             prompt=(\001\e[31m\002^'; '^\001\e[0m\002 '')
          } {%outdated_env} {
             prompt=(\001\e[30m\e[43m\002^';'^\001\e[0m\002^' ' '')
+         } {! ~ $VIRTUAL_ENV ()} {
+            prompt=(\001\e[30m\e[34m\002^';'^\001\e[0m\002^' ' '')
          } {
             prompt=('; ' '')
          }
