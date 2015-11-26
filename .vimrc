@@ -12,7 +12,11 @@ nnoremap <silent> <C-P> :bprev<CR>
 nnoremap <silent> gt :bnext<CR>
 nnoremap <silent> gT :bprev<CR>
 
-set undofile undodir=$HOME/.vim-undo
+nnoremap <silent> vc :GundoToggle<CR>
+
+set undofile
+set undodir=$HOME/.vim-undo
+set undolevels=5000
 
 set laststatus=2
 
