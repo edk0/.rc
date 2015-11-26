@@ -78,8 +78,6 @@ if {awk -Wv >[2] /dev/null | head -n 1 | grep -q '^mawk'} {
 
 hc pad $monitor $panel_height
 
-OUTPUT=/dev/stderr
-
 {
     ### Event generator ###
     # based on different input data (mpc, date, hlwm hooks, ...) this generates events, formed like this:
