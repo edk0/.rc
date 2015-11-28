@@ -41,6 +41,10 @@ if {! ~ $path $home/bin && [ -d $home/bin ]} {
    path = $home/bin $path
 }
 
+# exporting $path seems to override $PATH, which means it ignores intermediate
+# environments.
+noexport = ($noexport path)
+
 # run a command even if a function by the same name exists
 fn command name args { local (fn-$name=) {$name $args} }
 
