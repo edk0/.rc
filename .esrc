@@ -32,6 +32,15 @@ fn filter f { map @{ if {$f $* >/dev/null} {echo $*} } }
 
 cdpath = . ~ ~/src
 
+# set up our PATH. i want sourcing .esrc to be idempotent, so add things only
+# if they're not already there. ~/bin should override $ESRC_DIR/bin.
+if {! ~ $path $ESRC_DIR/bin} {
+   path = $ESRC_DIR/bin $path
+}
+if {! ~ $path $home/bin && [ -d $home/bin ]} {
+   path = $home/bin $path
+}
+
 # run a command even if a function by the same name exists
 fn command name args { local (fn-$name=) {$name $args} }
 
