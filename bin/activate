@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# activate          - deactivate any active venv. yes, i know.
+# activate <env>    - if <env> is a virtualenv, start a shell in it
+# activate -f <env> - as above, but if it's not a virtualenv, start a shell
+#                     anyway.
+
+force=
+
+if [ "$1" = "-f" ]; then
+    force=yes
+    shift 1
+fi
+
+noact=
+
+if [ -z "$1" ]; then
+    noact=yes
+else
+    venv="$(readlink -f $1)"
+    if [ ! -f "$venv/bin/python" ]; then
+        echo "Not a virtualenv: $1"
+        if [ -n "$force" ]; then
+            exec "$SHELL"
+        else
+            exit 1
+        fi
+    fi
+fi
+
+if [ -n "$VIRTUAL_ENV" ]; then
+    PATH=${PATH#$VIRTUAL_ENV/bin:}
+fi
+
+if [ -z "$noact" ]; then
+    export VIRTUAL_ENV="$venv" PATH="$venv/bin:$PATH"
+    unset PYTHONHOME
+else
+    export PATH
+    unset VIRTUAL_ENV PYTHONHOME
+fi
+
+exec "$SHELL"
