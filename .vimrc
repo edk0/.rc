@@ -73,5 +73,5 @@ autocmd FileType c,java,python,html,htmldjango autocmd BufWrite <buffer> exe "no
 
 colorscheme apprentice
 
-hi Unsullied ctermbg=NONE ctermfg=240  guibg=NONE    guifg=#585858 cterm=NONE           gui=NONE
+hi Unsullied ctermbg=NONE ctermfg=240 guibg=NONE guifg=#585858 cterm=NONE gui=NONE
 let g:unsullied_height=5
