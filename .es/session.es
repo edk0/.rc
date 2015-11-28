@@ -1,14 +1,14 @@
 # things we want to run at the beginning of each session.
 # close over status because i don't really want to expose it...
 
-let (status=) {
-   fn %sessionrc {
-      if {result $#ES_SESSION} {
-         ES_SESSION = 1
-         noexport = ($noeport ES_SESSION)
-         prompt_prefix = $^ES_PROMPT
-      }
+fn %sessionrc {
+   if {result $#ES_SESSION} {
+      ES_SESSION = 1
+      noexport = ($noeport ES_SESSION)
+      prompt_prefix = $^ES_PROMPT
+   }
 
+   let (status=) {
       fn %dispatch cmd {
          let (pwd=`` \n {pwd >[2] /dev/null}; cw=<={~~ $cmd \{*\}}) {
             # While we're running a command, set the xterm title to
@@ -38,8 +38,6 @@ let (status=) {
             return
          }
          let (pwd=`` \n {pwd >[2] /dev/null; true}) {
-            #fn-%dispatch = $fn-dispatch-error
-
             if {~ $pwd ()} {
                echo \e[31m^'# current directory disappeared!'^\e[0m
             } {
