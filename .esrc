@@ -102,6 +102,7 @@ let (esrc_mtime=`{stat -c%Y $ESRC_PATH}) {
 # the idea here is to run .es/session.es at the beginning of every
 # interactive session
 fn %prompt {
+   update_env
    fn %prompt
    %sessionrc
    if {! result $fn-%prompt} %prompt

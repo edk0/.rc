@@ -3,7 +3,11 @@
 
 let (status=) {
    fn %sessionrc {
-      update_env
+      if {result $#ES_SESSION} {
+         ES_SESSION = 1
+         noexport = ($noeport ES_SESSION)
+         prompt_prefix = $^ES_PROMPT
+      }
 
       fn %dispatch cmd {
          let (pwd=`` \n {pwd >[2] /dev/null}; cw=<={~~ $cmd \{*\}}) {
@@ -28,6 +32,11 @@ let (status=) {
       }
 
       fn %prompt {
+         if {result $#ES_SESSION} {
+            %sessionrc
+            %prompt
+            return
+         }
          let (pwd=`` \n {pwd >[2] /dev/null; true}) {
             #fn-%dispatch = $fn-dispatch-error
 
@@ -37,14 +46,16 @@ let (status=) {
                echo -n \e]\;^$pwd^\a
             }
             if {! result $status} {
-               prompt=(\001\e[31m\002^'; '^\001\e[0m\002 '')
+               ES_PROMPT=\001\e[31m\002^';'^\001\e[0m\002
             } {%outdated_env} {
-               prompt=(\001\e[30m\e[43m\002^';'^\001\e[0m\002^' ' '')
+               ES_PROMPT=\001\e[30m\e[43m\002^';'^\001\e[0m\002
             } {! ~ $VIRTUAL_ENV ()} {
-               prompt=(\001\e[30m\e[34m\002^';'^\001\e[0m\002^' ' '')
+               ES_PROMPT=\001\e[30m\e[34m\002^';'^\001\e[0m\002
             } {
-               prompt=('; ' '')
+               ES_PROMPT=';'
             }
+            ES_PROMPT = $prompt_prefix ^ $ES_PROMPT
+            prompt = ($ES_PROMPT ^ ' ' '')
             status =
          }
       }
