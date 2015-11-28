@@ -36,7 +36,7 @@ filetype on
 filetype plugin on
 syntax enable
 
-
+set formatoptions=tcroqj
 set nrformats=hex
 
 " fuck netrw.
@@ -56,7 +56,7 @@ autocmd FileType markdown,yaml setl ts=2 sts=2 sw=2
 autocmd FileType es,rst setl ts=3 sts=3 sw=3
 
 " specific format things
-autocmd FileType markdown,rst setl formatoptions=tcowa
+autocmd FileType markdown,rst setl formatoptions-=c formatoptions+=aw
 
 " searching
 set ignorecase smartcase
