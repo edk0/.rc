@@ -7,3 +7,6 @@
 	pl = log --oneline --all --decorate --graph
 [web]
 	browser = google-chrome
+[gc]
+	reflogExpire = never
+	reflogExpireUnreachable = never
