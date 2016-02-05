@@ -19,7 +19,6 @@ if [ -z "$1" ]; then
 else
     venv="$(readlink -f $1)"
     if [ ! -f "$venv/bin/python" ]; then
-        echo "Not a virtualenv: $1"
         if [ -n "$force" ]; then
             exec "$SHELL"
         else
@@ -31,6 +30,8 @@ fi
 if [ -n "$VIRTUAL_ENV" ]; then
     PATH=${PATH#$VIRTUAL_ENV/bin:}
 fi
+
+unset path
 
 if [ -z "$noact" ]; then
     export VIRTUAL_ENV="$venv" PATH="$venv/bin:$PATH"
