@@ -1,0 +1,5 @@
+#!/bin/sh
+
+font="-*-fixed-medium-*-*-*-14-*-*-*-*-*-*-*"
+
+dmenu -fn "$font" -nb "#20201d" -nf "#fefbec" -sb "#6684e1" -sf "#fefbec" "$@"
