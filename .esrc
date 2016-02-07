@@ -10,8 +10,8 @@ catch @ {
    %pathsearch realpath
 }
 
-# find .esrc and resolve symlinks. the location of .es is relative to the
-# directory it is in, so if .esrc is a symlink, .es does not also need to be
+# find .esrc and resolve symlinks. the location of es is relative to the
+# directory it is in, so if .esrc is a symlink, es does not also need to be
 # symlinked.
 if {! result $0} {
    # inside a `, $0 is '%backquote'
@@ -22,10 +22,10 @@ if {! result $0} {
 }
 ESRC_DIR=`{dirname $ESRC_PATH}
 
-. $ESRC_DIR/.es/alias.es
-. $ESRC_DIR/.es/cdpath.es
-. $ESRC_DIR/.es/cd_history.es
-. $ESRC_DIR/.es/session.es
+. $ESRC_DIR/es/alias.es
+. $ESRC_DIR/es/cdpath.es
+. $ESRC_DIR/es/cd_history.es
+. $ESRC_DIR/es/session.es
 
 fn map f { let (s=) { while {!%count <={s = <=%read}} {$f <={%split <={%flatten '' $ifs} $s}} } }
 fn filter f { map @{ if {$f $* >/dev/null} {echo $*} } }
@@ -103,7 +103,7 @@ let (esrc_mtime=`{stat -c%Y $ESRC_PATH}) {
    }
 }
 
-# the idea here is to run .es/session.es at the beginning of every
+# the idea here is to run es/session.es at the beginning of every
 # interactive session
 fn %prompt {
    update_env
