@@ -85,6 +85,15 @@ local (cmds = (
       env
 }
 
+# {environment,shell}-preserving 'su [user]'
+%makealias su @ {
+   if {! %count $1} {
+      return sudo -u $1 -E $SHELL
+   } {
+      return sudo -E $SHELL
+   }
+}
+
 # mechanism for shells post-login to update their environments. new
 # interactive shells will update_env, sourcing this file again if the copy in
 # their environment is old.
