@@ -73,6 +73,7 @@ fn git cmd a {
 # AcceptEnv for me. work around this by encoding $ES_PROMPT in $TERM and
 # explicitly invoking es -l  on those machines.
 ssh_sneak_machines=(
+   pineapple
 )
 fn ssh a {
    if {~ $a $ssh_sneak_machines} {
@@ -138,6 +139,6 @@ fn %prompt {
 
 # decode $TERM when the hack above is in use
 (TERM ES_PROMPT) = <={~~ $TERM :*:* *}
-if {! ~ $ES_PROMPT 0} {exec es} # es needs to start with the correct $TERM
+if {! ~ $ES_PROMPT ()} {exec es} # es needs to start with the correct $TERM
 
 true
