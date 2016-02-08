@@ -45,7 +45,7 @@ fn %sessionrc {
                   echo -n \e]\;^$pwd^\a
                }
                if {! result $SSH_CONNECTION} {
-                  echo \e[34m^'# '^$user^'@'^$host^\e[0m
+                  echo \e[34m^'# '^$host^\e[0m
                }
                if {! result $status} {
                   ES_PROMPT=\001\e[31m\002^';'^\001\e[0m\002
