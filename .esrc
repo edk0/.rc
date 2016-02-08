@@ -69,6 +69,19 @@ fn git cmd a {
    }
 }
 
+# XXX disgusting hack: not everyone installs es as a shell and adds an
+# AcceptEnv for me. work around this by encoding $ES_PROMPT in $TERM and
+# explicitly invoking es -l  on those machines.
+ssh_sneak_machines=(
+)
+fn ssh a {
+   if {~ $a $ssh_sneak_machines} {
+      local (TERM=:^$TERM^:^$ES_PROMPT) command ssh -t $a es -l
+   } {
+      command ssh $a
+   }
+}
+
 # these commands take commands as an argument; recursive-alias them to
 # themselves so said argument gets expanded if it's an alias.
 local (cmds = (
@@ -122,5 +135,9 @@ fn %prompt {
    %sessionrc
    if {! result $fn-%prompt} %prompt
 }
+
+# decode $TERM when the hack above is in use
+(TERM ES_PROMPT) = <={~~ $TERM :*:* *}
+if {! ~ $ES_PROMPT 0} {exec es} # es needs to start with the correct $TERM
 
 true
