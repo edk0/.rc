@@ -88,9 +88,9 @@ local (cmds = (
 # {environment,shell}-preserving 'su [user]'
 %makealias su @ {
    if {! %count $1} {
-      return sudo -u $1 -E $SHELL
+      return sudo -H -u $1 -E $SHELL
    } {
-      return sudo -E $SHELL
+      return sudo -H -E $SHELL
    }
 }
 
