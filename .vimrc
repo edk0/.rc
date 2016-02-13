@@ -36,7 +36,10 @@ filetype on
 filetype plugin on
 syntax enable
 
-set formatoptions=tcroqj
+set formatoptions=tcroq
+if version >= 704
+    set formatoptions+=j
+endif
 set nrformats=hex
 
 " fuck netrw.
