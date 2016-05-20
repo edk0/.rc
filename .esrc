@@ -1,7 +1,14 @@
 # vim: ft=es
 
-EDITOR = vi
-VISUAL = vi
+catch @ e {
+   EDITOR = vi
+   VISUAL = vi
+} {
+   %pathsearch nvim
+   EDITOR = nvim
+   VISUAL = nvim
+}
+
 PAGER = less
 
 catch @ {
@@ -59,6 +66,7 @@ alias hc   herbstclient
 alias q    exit
 alias tt   tee /dev/tty
 alias up   ssh upload
+alias vi   $EDITOR
 
 # git is stupid
 fn git cmd a {
