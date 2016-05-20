@@ -1,6 +1,6 @@
 execute pathogen#infect()
 
-set statusline=%f%m%=%l,%v\ %P\
+set statusline=%f%m%=%l,%v\ %P\ "trail
 
 set path=.,**
 
@@ -67,7 +67,7 @@ set ignorecase smartcase
 noremap <silent> sw ms$:s/\s\+$//<CR>g`s
 
 " draw trailing whitespace
-exec 'set list lcs=trail:·,tab:→\ '
+set list lcs=trail:·,tab:→\ "trail
 
 " remove trailing whitespace from files we save of certain types
 autocmd FileType c,java,python,html,htmldjango autocmd BufWrite <buffer> exe "norm!ms"|keepj %s/\s\+$//e|exe "norm!g`s"
