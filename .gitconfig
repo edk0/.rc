@@ -11,4 +11,4 @@
 	reflogExpire = never
 	reflogExpireUnreachable = never
 [core]
-	excludesfile = ~/.rc/cvsignore
+	excludesfile = ~/.rc/ignore
