@@ -4,7 +4,7 @@
 fn %sessionrc {
    if {result $#ES_SESSION} {
       ES_SESSION = 1
-      noexport = ($noeport ES_SESSION)
+      noexport = ($noexport ES_SESSION)
       prompt_prefix = $^ES_PROMPT
    }
 
