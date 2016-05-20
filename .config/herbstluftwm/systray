@@ -1,0 +1,45 @@
+#!/bin/bash
+
+TRAYCMD='stalonetray --dockapp-mode simple --grow-gravity E --geometry 1x1-0+0 -i 16 -bg "#20201d" --window-layer top'
+
+hc() { herbstclient "$@" ; }
+
+TRAYCMD="$TRAYCMD --log-level info"
+
+# reset the padding if we get killed, but not if stalonetray exits since we assume there'll be another one
+trap 'hc emit_hook panel_pad 0' HUP INT TERM
+
+pkill $(echo "$TRAYCMD"|cut -d' ' -f1)
+
+hc rule once maxage=60 class="stalonetray" hook=tray_fixes_winid
+hc rule once maxage=60 class="dzen"        hook=tray_fixes_raise
+
+wide=0
+
+(
+	hc --idle 'rule' &
+	pid=$!
+	eval "$TRAYCMD" 2>&1 >/dev/null
+	kill "$pid"
+) | {
+	while read -r line; do
+		if echo "$line" | grep ^geometry: >/dev/null ; then
+			wide=$(echo "$line"|cut -d' ' -f2|cut -d'x' -f1)
+			hc emit_hook panel_pad "$wide"
+		fi
+		if [ "$(echo "$line"|cut -f1)" = "rule" ]; then
+			cmd=$(echo "$line"|cut -f2)
+			arg=$(echo "$line"|cut -f3)
+			case "$cmd" in
+			"tray_fixes_winid")
+				wid="$arg"
+				hc raise "$wid"
+				;;
+			"tray_fixes_raise")
+				hc raise "$wid"
+				hc emit_hook panel_pad "$wide"
+				;;
+			esac
+		fi
+	done
+}
