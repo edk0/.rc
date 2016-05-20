@@ -28,6 +28,7 @@ set mouse=a
 set number
 set scrolloff=1
 set wildmenu
+set nohlsearch
 
 let g:c_syntax_for_h=1
 
