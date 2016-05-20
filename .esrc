@@ -146,7 +146,12 @@ fn %prompt {
 }
 
 # decode $TERM when the hack above is in use
-(TERM ES_PROMPT) = <={~~ $TERM :*:* *}
-if {! ~ $ES_PROMPT ()} {exec es} # es needs to start with the correct $TERM
+let (hacked_prompt=) {
+   (TERM hacked_prompt) = <={~~ $TERM :*:* *}
+   if {! ~ $hacked_prompt ()} {
+      ES_PROMPT = $hacked_prompt
+      exec es # es needs to start with the correct $TERM
+   }
+}
 
 true
