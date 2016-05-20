@@ -22,7 +22,7 @@ fork {
    if {[ `{ssh-add -l|wc -l} -lt 1 ]} {
 	   ssh-add || exit
    }
-   start_in irc 'instance=urxvt-irc' urxvt -name urxvt-irc -e mosh kellett.im -- tmux attach -t irc
+   start_in irc 'instance=urxvt-irc' urxvt -name urxvt-irc -e mosh vimes -- tmux attach -t irc
 }
 
 start_in web 'class=google-chrome' google-chrome --new-window
