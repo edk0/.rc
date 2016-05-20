@@ -25,3 +25,6 @@
 [submodule ".vim/bundle/Insertlessly"]
 	path = .vim/bundle/Insertlessly
 	url = https://github.com/dahu/Insertlessly.git
+[submodule ".vim/bundle/vim-mundo"]
+	path = .vim/bundle/vim-mundo
+	url = https://github.com/simnalamburt/vim-mundo.git

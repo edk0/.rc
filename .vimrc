@@ -16,7 +16,7 @@ nnoremap <silent> gT :bprev<CR>
 nnoremap <Leader>g :ls<CR>:b *
 nnoremap <Leader>f :find *
 
-nnoremap <silent> vc :GundoToggle<CR>
+nnoremap <silent> vc :MundoToggle<CR>
 
 set undofile
 set undodir=$HOME/.vim-undo
