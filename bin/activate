@@ -41,4 +41,10 @@ else
     unset VIRTUAL_ENV PYTHONHOME
 fi
 
-exec "$SHELL"
+if [ -z "$noact" ]; then shift 1; fi
+
+if [ -n "$*" ]; then
+    exec "$SHELL" -c "$@"
+else
+    exec "$SHELL"
+fi
