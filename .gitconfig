@@ -4,7 +4,7 @@
 [push]
 	default = simple
 [alias]
-	pl = log --oneline --all --decorate --graph
+	pl = log --oneline --decorate --graph --exclude=*/gh-pages --all
 [web]
 	browser = google-chrome
 [gc]
