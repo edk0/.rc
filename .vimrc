@@ -57,7 +57,7 @@ autocmd FileType groovy setl ts=2 sts=2 sw=2
 autocmd FileType es,rst setl ts=3 sts=3 sw=3
 
 " specific format things
-autocmd FileType markdown,rst setl formatoptions-=c formatoptions+=a
+autocmd FileType markdown,rst setl formatoptions-=c
 autocmd FileType rst setl formatoptions+=w
 
 " searching
