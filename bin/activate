@@ -44,7 +44,16 @@ fi
 if [ -z "$noact" ]; then shift 1; fi
 
 if [ -n "$*" ]; then
-    exec "$SHELL" -c "$@"
+    # XXX this stuff is to work around a limitation of shells (mostly es) that
+    # have no way to accept a -c with arguments starting with -
+    # i'm quoting things by replacing ' with '\'', which fails for rc, but is
+    # reliable for sh, bash and es
+    cmd=""
+    while [ -n "$*" ]; do
+        cmd="$cmd $(echo $1|sed "s/'/'\\\\''/g; s/^/'/; s/$/'/;")"
+        shift 1
+    done
+    _COMMAND="$cmd" exec "$SHELL" -c 'eval $_COMMAND'
 else
     exec "$SHELL"
 fi
