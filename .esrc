@@ -67,6 +67,7 @@ alias q    exit
 alias tt   tee /dev/tty
 alias up   ssh upload
 alias vi   $EDITOR
+alias svi  sudoedit
 
 # git is stupid
 fn git cmd a {
