@@ -2,14 +2,18 @@
 #umask 022
 
 if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
+	# include .bashrc if it exists
+	if [ -f "$HOME/.bashrc" ]; then
 	. "$HOME/.bashrc"
-    fi
+	fi
+fi
+
+if [ -f "$HOME/.profile.local" ]; then
+	. "$HOME/.profile.local"
 fi
 
 if [ -f "$HOME/.esrc" ]; then
-    eval "`es -l <<x
-        sh <<<'export -p'
+	eval "`es -l <<x
+		sh <<<'export -p'
 x`"
 fi

@@ -38,7 +38,7 @@ syntax enable
 
 set formatoptions=tcroq
 if version >= 704
-    set formatoptions+=j
+	set formatoptions+=j
 endif
 set nrformats=hex
 
@@ -48,11 +48,10 @@ let loaded_netrwPlugin = 1
 " enable filetype indent for some things
 " (use a fairly sensible indent thing for all others)
 set autoindent copyindent preserveindent
-autocmd FileType python,yaml,rst filetype indent on
 filetype indent on
 
-set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
-autocmd FileType c setl noexpandtab
+set tabstop=4 softtabstop=4 shiftwidth=4
+autocmd FileType python,rst,md,yaml set expandtab
 
 " specific indent things
 autocmd FileType markdown,yaml setl ts=2 sts=2 sw=2

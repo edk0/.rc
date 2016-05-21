@@ -12,48 +12,48 @@ cd-stack = .
 cwd = `pwd
 
 fn cd dir {
-   if {~ $#dir 0} {
-      if {! ~ $#home 1} {
-         throw error cd <={
-            if {~ $#home 0} {
-               result 'cd: $home not set'
-            } {
-               result 'cd: $home contains more than one word'
-            }
-         }
-      }
-      dir = $home
-   } {~ $#dir 1} {
-      if { ~ $dir -* } {
-         let (index = <={%split - $dir}) {
-            if {~ $#index 0} {
-               index = 1
-            } { ! ~ $index [0-9]* } {
-               throw error cd 'cd: invalid argument'
-            }
-            dir = $cd-stack($index)
-         }
-         if { ~ $#dir 0 } {
-            throw error cd 'cd: stack not that deep'
-         }
-      } {! %is-absolute $dir} {
-         let (old = $dir) {
-            dir = <={%cdpathsearch $dir}
-            if {! ~ $dir $old} {
-            }
-         }
-      }
-   } {
-      throw error cd 'usage: cd [-[N]|[directory]]'
-   }
+	if {~ $#dir 0} {
+		if {! ~ $#home 1} {
+			throw error cd <={
+				if {~ $#home 0} {
+					result 'cd: $home not set'
+				} {
+					result 'cd: $home contains more than one word'
+				}
+			}
+		}
+		dir = $home
+	} {~ $#dir 1} {
+		if { ~ $dir -* } {
+			let (index = <={%split - $dir}) {
+				if {~ $#index 0} {
+					index = 1
+				} { ! ~ $index [0-9]* } {
+					throw error cd 'cd: invalid argument'
+				}
+				dir = $cd-stack($index)
+			}
+			if { ~ $#dir 0 } {
+				throw error cd 'cd: stack not that deep'
+			}
+		} {! %is-absolute $dir} {
+			let (old = $dir) {
+				dir = <={%cdpathsearch $dir}
+				if {! ~ $dir $old} {
+				}
+			}
+		}
+	} {
+		throw error cd 'usage: cd [-[N]|[directory]]'
+	}
 
-   if {$&cd $dir} {
-      cd-stack = ($cwd $cd-stack( 1 ... $cd-stack-depth ))
-      cwd = `pwd
-      echo $cwd >[1=2]
-   }
+	if {$&cd $dir} {
+		cd-stack = ($cwd $cd-stack( 1 ... $cd-stack-depth ))
+		cwd = `pwd
+		echo $cwd >[1=2]
+	}
 }
 
 fn %cd-stack {
-   return $cd-stack
+	return $cd-stack
 }

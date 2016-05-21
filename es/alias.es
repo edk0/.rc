@@ -13,35 +13,35 @@
 
 # locally unset fn-$0 to prevent recursive expansion
 %runalias = @ {
-   local (fn-$0=$(-builtin-$0)) {
-      <= {%expandalias $0 $*}
-   }
+	local (fn-$0=$(-builtin-$0)) {
+		<= {%expandalias $0 $*}
+	}
 }
 
 # expand an alias (by running -alias-NAME)
 fn %expandalias name args {
-   if {! %count $name && ! %count $(-alias-$name)} {
-      let (v= <= {$(-alias-$name) $args}) {
-         return $v
-      }
-   } {
-      return $name $args
-   }
+	if {! %count $name && ! %count $(-alias-$name)} {
+		let (v= <= {$(-alias-$name) $args}) {
+			return $v
+		}
+	} {
+		return $name $args
+	}
 }
 
 # low-level interface: make an alias out of a function that expands its args
 fn %makealias name f {
-   if {! result $f} {
-      -alias-$name = $f
-      if {! ~ $(fn-$name) $%runalias} {-builtin-$name = $(fn-$name)}
-      fn-$name = $%runalias
-   } {
-      # special-case empty $f to unbind the command
-      -alias-$name =
-      -builtin-$name =
-      fn-$name =
-   }
-   true
+	if {! result $f} {
+		-alias-$name = $f
+		if {! ~ $(fn-$name) $%runalias} {-builtin-$name = $(fn-$name)}
+		fn-$name = $%runalias
+	} {
+		# special-case empty $f to unbind the command
+		-alias-$name =
+		-builtin-$name =
+		fn-$name =
+	}
+	true
 }
 
 # an alias that expands the first word of its argument
@@ -49,42 +49,42 @@ fn %makealias name f {
 # these are option detection, so we can try to expand the actual first arg
 # instead of the first option.
 let (
-   # hack to avoid defining a self-referential closure
-   isopt_d = @ x {~ $x -*};
-   isend_d = @ x {~ $x --};
+	# hack to avoid defining a self-referential closure
+	isopt_d = @ x {~ $x -*};
+	isend_d = @ x {~ $x --};
 ) fn %alias_expands isopt isend args {
-   isopt = <={if {result $isopt} {result $isopt_d} {result $isopt}};
-   isend = <={if {result $isend} {result $isend_d} {result $isend}};
-   return @ {
-      let (argslist=$args) {
-         for (arg = $*) {
-            if {$isend $arg} {
-               argslist = ($argslist $arg)
-               * = $*(2 ...)
-               break
-            } {$isopt $arg} {
-               argslist = ($argslist $arg)
-               * = $*(2 ...)
-            } {
-               break
-            }
-         }
-         return $argslist <={%expandalias $*}
-      }
-   }
+	isopt = <={if {result $isopt} {result $isopt_d} {result $isopt}};
+	isend = <={if {result $isend} {result $isend_d} {result $isend}};
+	return @ {
+		let (argslist=$args) {
+			for (arg = $*) {
+				if {$isend $arg} {
+					argslist = ($argslist $arg)
+					* = $*(2 ...)
+					break
+				} {$isopt $arg} {
+					argslist = ($argslist $arg)
+					* = $*(2 ...)
+				} {
+					break
+				}
+			}
+			return $argslist <={%expandalias $*}
+		}
+	}
 }
 
 fn alias name args {
-   if {~ $args ()} {
-      %makealias $name
-   } {
-      %makealias $name @ { return $args $* }
-   }
+	if {~ $args ()} {
+		%makealias $name
+	} {
+		%makealias $name @ { return $args $* }
+	}
 }
 fn aliasr name args {
-   if {~ $args ()} {
-      %makealias $name
-   } {
-      %makealias $name <={%alias_expands 0 0 $args}
-   }
+	if {~ $args ()} {
+		%makealias $name
+	} {
+		%makealias $name <={%alias_expands 0 0 $args}
+	}
 }

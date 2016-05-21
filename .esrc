@@ -1,31 +1,31 @@
 # vim: ft=es
 
 catch @ e {
-   EDITOR = vi
-   VISUAL = vi
+	EDITOR = vi
+	VISUAL = vi
 } {
-   %pathsearch nvim
-   EDITOR = nvim
-   VISUAL = nvim
+	%pathsearch nvim
+	EDITOR = nvim
+	VISUAL = nvim
 }
 
 PAGER = less
 
 catch @ {
-   fn realpath p { readlink -f $p }
+	fn realpath p { readlink -f $p }
 } {
-   %pathsearch realpath
+	%pathsearch realpath
 }
 
 # find .esrc and resolve symlinks. the location of es is relative to the
 # directory it is in, so if .esrc is a symlink, es does not also need to be
 # symlinked.
 if {! result $0} {
-   # inside a `, $0 is '%backquote'
-   local (me=$0) ESRC_PATH=`{realpath $me}
+	# inside a `, $0 is '%backquote'
+	local (me=$0) ESRC_PATH=`{realpath $me}
 } {
-   # just assume we're .esrc
-   ESRC_PATH=`{realpath $HOME/.esrc}
+	# just assume we're .esrc
+	ESRC_PATH=`{realpath $HOME/.esrc}
 }
 ESRC_DIR=`{dirname $ESRC_PATH}
 
@@ -42,16 +42,16 @@ cdpath = . ~ ~/src
 # set up our PATH. i want sourcing .esrc to be idempotent, so add things only
 # if they're not already there. ~/bin should override $ESRC_DIR/bin.
 if {! ~ $path $ESRC_DIR/bin} {
-   path = $ESRC_DIR/bin $path
+	path = $ESRC_DIR/bin $path
 }
 if {! ~ $path $home/bin && [ -d $home/bin ]} {
-   path = $home/bin $path
+	path = $home/bin $path
 }
 
 # exporting $path seems to override $PATH, which means it ignores intermediate
 # environments.
 for (v = path home) {
-   if {! ~ $v $noexport} {noexport = ($noexport $v)}
+	if {! ~ $v $noexport} {noexport = ($noexport $v)}
 }
 
 # run a command even if a function by the same name exists
@@ -71,52 +71,52 @@ alias svi  sudoedit
 
 # git is stupid
 fn git cmd a {
-   if {~ $cmd commit} {
-      command git commit -v $a
-   } {
-      command git $cmd $a
-   }
+	if {~ $cmd commit} {
+		command git commit -v $a
+	} {
+		command git $cmd $a
+	}
 }
 
 # XXX disgusting hack: not everyone installs es as a shell and adds an
 # AcceptEnv for me. work around this by encoding $ES_PROMPT in $TERM and
 # explicitly invoking es -l  on those machines.
 ssh_sneak_machines=(
-   pineapple
+	pineapple
 )
 fn ssh a {
-   if {~ $a $ssh_sneak_machines} {
-      local (TERM=:^$TERM^:^$ES_PROMPT) command ssh -t $a es -l
-   } {
-      command ssh $a
-   }
+	if {~ $a $ssh_sneak_machines} {
+		local (TERM=:^$TERM^:^$ES_PROMPT) command ssh -t $a es -l
+	} {
+		command ssh $a
+	}
 }
 
 # these commands take commands as an argument; recursive-alias them to
 # themselves so said argument gets expanded if it's an alias.
 local (cmds = (
-   command
-   nohup
-   stdbuf
-   sudo
-   time
+	command
+	nohup
+	stdbuf
+	sudo
+	time
 )) for (cmd=$cmds) { aliasr $cmd $cmd }
 
 # 'env a\=b c\=d command` should expand command as an alias.
 %makealias env <={
-   %alias_expands \
-      @ x{~ $x -* *\=*} \
-      0 \
-      env
+	%alias_expands \
+		@ x{~ $x -* *\=*} \
+		0 \
+		env
 }
 
 # {environment,shell}-preserving 'su [user]'
 %makealias su @ {
-   if {! %count $1} {
-      return sudo -H -u $1 -E $SHELL
-   } {
-      return sudo -H -E $SHELL
-   }
+	if {! %count $1} {
+		return sudo -H -u $1 -E $SHELL
+	} {
+		return sudo -H -E $SHELL
+	}
 }
 
 # mechanism for shells post-login to update their environments. new
@@ -127,32 +127,32 @@ local (cmds = (
 # .esrc myself, avoid sourcing it when unnecessary, and avoid magically
 # breaking all my shells if i screw up
 let (esrc_mtime=`{stat -c%Y $ESRC_PATH}) {
-   fn %outdated_env {
-      [ `{stat -c%Y $ESRC_PATH} -gt $esrc_mtime ]
-   }
-   fn update_env {
-      if {%outdated_env} {
-         . $ESRC_PATH
-      }
-   }
+	fn %outdated_env {
+		[ `{stat -c%Y $ESRC_PATH} -gt $esrc_mtime ]
+	}
+	fn update_env {
+		if {%outdated_env} {
+			. $ESRC_PATH
+		}
+	}
 }
 
 # the idea here is to run es/session.es at the beginning of every
 # interactive session
 fn %prompt {
-   update_env
-   fn %prompt
-   %sessionrc
-   if {! result $fn-%prompt} %prompt
+	update_env
+	fn %prompt
+	%sessionrc
+	if {! result $fn-%prompt} %prompt
 }
 
 # decode $TERM when the hack above is in use
 let (hacked_prompt=) {
-   (TERM hacked_prompt) = <={~~ $TERM :*:* *}
-   if {! ~ $hacked_prompt ()} {
-      ES_PROMPT = $hacked_prompt
-      exec es # es needs to start with the correct $TERM
-   }
+	(TERM hacked_prompt) = <={~~ $TERM :*:* *}
+	if {! ~ $hacked_prompt ()} {
+		ES_PROMPT = $hacked_prompt
+		exec es # es needs to start with the correct $TERM
+	}
 }
 
 true

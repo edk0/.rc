@@ -14,7 +14,7 @@ let (cd = $fn-cd) fn cd dir {
 	}
 }
 
-fn %cdpathsearch name { access -n $name -1e -d  $cdpath }
+fn %cdpathsearch name { access -n $name -1e -d $cdpath }
 fn %is-absolute path { ~ $path /* ./* ../* }
 
 set-cdpath = @{local (set-CDPATH=) CDPATH=<={%flatten : $*}; result $*}
