@@ -22,3 +22,6 @@
 [submodule ".vim/bundle/vim-mundo"]
 	path = .vim/bundle/vim-mundo
 	url = https://github.com/simnalamburt/vim-mundo.git
+[submodule ".vim/bundle/unite.vim"]
+	path = .vim/bundle/unite.vim
+	url = https://github.com/Shougo/unite.vim.git
