@@ -1,10 +1,16 @@
 #!/usr/bin/env es
 
-# create symlinks from $HOME to here.
-# if here is inside $HOME, the links are relative.
+# does several things:
+
+# - git update --init --recursive
+# - makes any subdirectory with a
+# - create symlinks from $HOME to here.
+#   if here is inside $HOME, the links are relative.
 
 # install u  to uninstall
 # install f  to install even if it overwrites things
+
+fn-cd = $&cd
 
 catch @ {
    fn realpath p { readlink -f $p }
@@ -99,6 +105,28 @@ targets = (
 uninstall
 
 if {result $#uninst} {
+   echo Updating git modules...
+   fork {
+      cd $installpath
+      git submodule update --init --recursive --quiet
+   } || {
+      echo Not installing, git errored
+      exit 1
+   }
+   echo Making things...
+   fork {
+      cd $installpath
+      for (f = `` \n {find . -type f -name Makefile}) {
+         fork {
+            cd `` \n {dirname $f}
+            make || exit 1
+         } || exit 1
+      }
+   } || {
+      echo Not installing, a Makefile errored
+      exit 1
+   }
+
    mkdir -p $HOME/.vim-tmp
 
    for (target=$targets) {
