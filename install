@@ -6,9 +6,11 @@
 # - makes any subdirectory with a
 # - create symlinks from $HOME to here.
 #   if here is inside $HOME, the links are relative.
+# - generates an uninstall script, usually invoked by itself.
 
 # install u  to uninstall
-# install f  to install even if it overwrites things
+# install f  to install even if some files already exist
+#            they will be backed up, uninstall will restore
 
 fn-cd = $&cd
 
@@ -23,9 +25,13 @@ if {result $0 || result $HOME || ~ $HOME /} {
    exit 1
 }
 
+uninstaller = $HOME/.edk.uninstall.es
+
 uninst=
 force=
 relative=
+
+backup_dir=
 
 if {~ $1 u} {
    echo Uninstall
@@ -50,13 +56,22 @@ if {~ $installpath $HOME/*} {
 
 #####
 
-fn uninstall {
-   if {[ -f $HOME/.edk.uninstall.es ]} {
-      fork {. $HOME/.edk.uninstall.es}
-      rm $HOME/.edk.uninstall.es
+# Uninstall a previous installation, and possibly restore from backups
+fn uninstall a {
+   if {[ -f $uninstaller ]} {
+      fork {. $uninstaller $a}
+      rm $uninstaller
    }
 }
 
+# Roll back the installation in progress
+fn rollback {
+   uninstall
+   if {! result $#backup_dir} {rmdir $backup_dir}
+}
+
+# If this is a relative installation, return enough '../' to get from
+# the file named by $f to its containing directory
 fn relpath f {
    if {result $relative} return
    local (t='') {
@@ -68,22 +83,48 @@ fn relpath f {
    }
 }
 
+# Return the path to the backup directory, creating it if necessary
+fn backup_dir {
+   if {result $#backup_dir} {
+      backup_dir=`` \n {mktemp -d -p $HOME .edk.backup-XXXXXXXX}
+   }
+   result $backup_dir
+}
+
+# Link a particular filename from $HOME and append the complementary
+# operation to the uninstaller script
 fn link_file n {
    echo + $n
-   local (linkpath=(<={relpath $n})^$linkpath) {
-      if {[ -f $HOME/$n ]} {
-         if {! result $#force} {
-            ln -fs $linkpath/$n $HOME/$n
+   local (backuppath=) {
+      local (linkpath=(<={relpath $n})^$linkpath) {
+         if {[ -f $HOME/$n ]} {
+            if {! result $#force} {
+               backuppath = <={backup_dir} ^ /$n
+               mv $HOME/$n $backuppath
+               ln -fs $linkpath/$n $HOME/$n
+            } {
+               echo error: $HOME/$n exists
+               return 'file exists'
+            }
          } {
-            echo error: $HOME/$n exists
-            return file-exists
+            ln -s $linkpath/$n $HOME/$n
          }
-      } {
-         ln -s $linkpath/$n $HOME/$n
       }
-   }
-   let (path=$HOME/$n) {
-      echo {echo - $n; rm $path} >> $HOME/.edk.uninstall.es
+      let (p=$HOME/$n) {
+         if {result $#backuppath} {
+            remove = {
+               echo - $n
+               rm -- $p
+            }
+         } {
+            let (backuppath=$backuppath) remove = {
+               echo \* $n
+               rm -- $p
+               mv -- $backuppath $p
+            }
+         }
+         echo $remove >> $uninstaller
+      }
    }
 }
 
@@ -113,6 +154,7 @@ if {result $#uninst} {
       echo Not installing, git errored
       exit 1
    }
+
    echo Making things...
    fork {
       cd $installpath
@@ -133,11 +175,20 @@ if {result $#uninst} {
       local (r=<={link_file $target}) {
          if {! result $r} {
             echo error occurred, uninstalling!
-            uninstall
+            rollback
             echo failed to install: $r
             exit $r
          }
       }
+   }
+
+   if {! result $#backup_dir} {
+      let (backup_dir=$backup_dir)
+         echo {rm -rf -- $backup_dir} >> $uninstaller
+      # This isn't necessary or used by any script, but I don't like the idea
+      # that I might have a backup directory but lose its restoring script
+      ln $uninstaller $backup_dir/uninstall
+      echo 'Existing files were moved to' $backup_dir
    }
 }
 
