@@ -78,6 +78,10 @@ fn git cmd a {
 	}
 }
 
+fn mutt account a {
+	command mutt -F ~/.mutt/$account $a
+}
+
 # XXX disgusting hack: not everyone installs es as a shell and adds an
 # AcceptEnv for me. work around this by encoding $ES_PROMPT in $TERM and
 # explicitly invoking es -l  on those machines.
