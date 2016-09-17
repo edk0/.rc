@@ -8,6 +8,9 @@ fn %sessionrc {
 		prompt_prefix = $^ES_PROMPT
 	}
 
+	GPG_TTY = `tty
+	. <{cat ~/.gnupg/gpg-agent-info ~/.gnupg/gpg-agent-info-* >[2] /dev/null}
+
 	let (status=) {
 		fn %dispatch cmd {
 			let (pwd=`` \n {pwd >[2] /dev/null}; cw=<={~~ $cmd \{*\}}) {
