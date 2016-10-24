@@ -45,13 +45,12 @@ set nrformats=hex
 " fuck netrw.
 let loaded_netrwPlugin = 1
 
-" enable filetype indent for some things
-" (use a fairly sensible indent thing for all others)
 set autoindent copyindent preserveindent
 filetype indent on
 
 set tabstop=4 softtabstop=4 shiftwidth=4
-autocmd FileType python,rst,md,yaml,html set expandtab
+autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+autocmd FileType python,rst,markdown,yaml,html set expandtab
 
 " specific indent things
 autocmd FileType markdown,yaml setl ts=2 sts=2 sw=2
@@ -81,7 +80,7 @@ set list lcs=trail:·,tab:→\ "trail
 " remove trailing whitespace from files we save of certain types
 autocmd FileType * autocmd BufWrite mkview|exe "norm!ms"|keepj %s/\s\+$//e|exe "norm!g`s"|silent loadview
 
-
+" style
 set cursorline
 colorscheme apprentice
 
