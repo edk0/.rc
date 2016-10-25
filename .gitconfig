@@ -12,3 +12,9 @@
 	reflogExpireUnreachable = never
 [core]
 	excludesfile = ~/.rc/ignore
+[transfer]
+	fsckobjects = true
+[fetch]
+	fsckobjects = true
+[receive]
+	fsckobjects = true
