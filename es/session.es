@@ -10,12 +10,18 @@ fn %sessionrc {
 
 	GPG_TTY = `tty
 
+	if {~ $TERM linux} {
+		fn %set_title { }
+	} {
+		fn %set_title {printf '\e];%s\a' $title}
+	}
+
 	let (status=) {
 		fn %dispatch cmd {
 			let (pwd=`` \n {pwd >[2] /dev/null}; cw=<={~~ $cmd \{*\}}) {
 				# While we're running a command, set the xterm title to
 				# PWD - command args
-				echo -n \e]\;^$pwd^' - '^$cw^\a
+				%set_title $pwd^' - '^$cw
 			}
 			let (result = <={$cmd}) {
 				local(r2=) if {~ $result *[~0-9-]*} {
@@ -44,7 +50,7 @@ fn %sessionrc {
 					if {~ $pwd ()} {
 						echo \e[31m^'# current directory disappeared!'^\e[0m
 					} {
-						echo -n \e]\;^$pwd^\a
+						%set_title $pwd
 					}
 					if {! result $SSH_CONNECTION} {
 						echo \e[34m^'# '^$host^\e[0m
