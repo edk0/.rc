@@ -9,7 +9,6 @@ fn %sessionrc {
 	}
 
 	GPG_TTY = `tty
-	. <{cat ~/.gnupg/gpg-agent-info ~/.gnupg/gpg-agent-info-* >[2] /dev/null}
 
 	let (status=) {
 		fn %dispatch cmd {
