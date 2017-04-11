@@ -13,7 +13,7 @@ fn %sessionrc {
 	if {~ $TERM linux} {
 		fn %set_title { }
 	} {
-		fn %set_title title {printf '\e];%s\a' $title}
+		fn %set_title title {printf '\033];%s\a' $title}
 	}
 
 	let (status=) {
