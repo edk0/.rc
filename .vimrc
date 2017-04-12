@@ -2,12 +2,12 @@ execute pathogen#infect()
 
 let mapleader=","
 
-set statusline=%f%m%=%l,%v\ %P\ "trail
+set statusline=%f:%l%m%=%l,%v\ %P\ "trail
+
+let g:python_host_prog = '/usr/bin/python2.7'
+let g:python3_host_prog = '/usr/local/bin/python3.5'
 
 set path=.,**
-
-" fugitive+es freak out, yay
-set shell=sh
 
 nnoremap <silent> vc :MundoToggle<CR>
 
@@ -60,6 +60,8 @@ autocmd FileType es,rst setl ts=3 sts=3 sw=3
 " specific format things
 autocmd FileType markdown,rst setl formatoptions-=c
 autocmd FileType rst setl formatoptions+=w
+
+nnoremap <Leader>t :tag<Space>
 
 " unite
 call unite#custom#source('file,file_rec', 'matchers', ['matcher_default', 'matcher_project_ignore_files'])
