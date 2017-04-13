@@ -1,5 +1,9 @@
 # vim: ft=es
 
+if {result $#_RUN_PROFILE} {
+	exec sh -c '. "$HOME/.profile";es -l'
+}
+
 catch @ e {
 	EDITOR = vi
 	VISUAL = vi
