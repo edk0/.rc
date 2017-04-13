@@ -1,3 +1,6 @@
+filetype on
+filetype off
+
 execute pathogen#infect()
 
 let mapleader=","
@@ -32,8 +35,7 @@ set clipboard=unnamed
 
 let g:c_syntax_for_h=1
 
-filetype on
-filetype plugin on
+filetype plugin indent on
 syntax enable
 
 set formatoptions=tcroq
