@@ -6,7 +6,7 @@
 [alias]
 	pl = log --oneline --decorate --graph --exclude=*/gh-pages --all
 [web]
-	browser = google-chrome
+	browser = firefox
 [gc]
 	reflogExpire = never
 	reflogExpireUnreachable = never
