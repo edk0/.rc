@@ -136,7 +136,7 @@ fn link_file n {
 }
 
 fn link_name n t {
-	prepare_target $n {ln -s $t $HOME/$n}
+   prepare_target $n {ln -s $t $HOME/$n}
 }
 
 #####
