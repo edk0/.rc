@@ -33,6 +33,10 @@ targets = (
    { ensure_directory bin }
    { ensure_directory src }
    { ensure_directory tmp }
+
+   # handle this specially because .ssh permissions are important
+   { ensure_directory .ssh { chmod go-rwx $HOME/.ssh } }
+   { link_file .ssh/config }
 )
 
 # Link a particular filename from $HOME and append the complementary
