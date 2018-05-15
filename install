@@ -13,6 +13,55 @@
 # install f  to install even if some files already exist
 #            they will be backed up, uninstall will restore
 
+# A list of operations to be attempted in order to install our stuff.
+# They're defined immediately below. They take care of their own
+# rollback-ing.
+targets = (
+   { ensure_directory .config }
+   { link_file .config/herbstluftwm }
+   { link_name .config/nvim ../.vim }
+   { link_file .esrc }
+   { link_file .gitconfig }
+   { link_file .profile }
+   { link_file .vim }
+   { link_file .vimrc }
+   { ensure_directory .vim-tmp }
+   { ensure_directory .vim-undo }
+   { link_file .Xresources }
+   { link_file .xsessionrc }
+
+   { ensure_directory bin }
+   { ensure_directory src }
+   { ensure_directory tmp }
+)
+
+# Link a particular filename from $HOME and append the complementary
+# operation to the uninstaller script
+fn link_file n {
+   prepare_target $n {ln -s $linkpath/$n $HOME/$n}
+}
+
+# Make a filename (relative to $HOME) an arbitrary symbolic link
+fn link_name n t {
+   prepare_target $n {ln -s $t $HOME/$n}
+}
+
+# Ensure a name relative to $HOME is a directory. Can't be forced if
+# it's not a directory; uninstalling would have to remove the dir
+# again, which I don't like.
+fn ensure_directory n {
+   echo \= $n
+   if {[ -d $HOME/$n ]} {
+      return
+   } {[ -e $HOME/$n ]} {
+      echo error: $HOME/$n exists and is not a directory
+   } {
+      mkdir -p $HOME/$n
+   }
+}
+
+#####
+
 catch @ {
    fn realpath p { readlink -f $p }
 } {
@@ -127,52 +176,6 @@ fn prepare_target n f {
       }
    }
 }
-
-# Link a particular filename from $HOME and append the complementary
-# operation to the uninstaller script
-fn link_file n {
-   prepare_target $n {ln -s $linkpath/$n $HOME/$n}
-}
-
-# Make a filename (relative to $HOME) an arbitrary symbolic link
-fn link_name n t {
-   prepare_target $n {ln -s $t $HOME/$n}
-}
-
-# Ensure a name relative to $HOME is a directory. Can't be forced if
-# it's not a directory; uninstalling would have to remove the dir
-# again, which I don't like.
-fn ensure_directory n {
-   echo \= $n
-   if {[ -d $HOME/$n ]} {
-      return
-   } {[ -e $HOME/$n ]} {
-      echo error: $HOME/$n exists and is not a directory
-   } {
-      mkdir -p $HOME/$n
-   }
-}
-
-#####
-
-targets = (
-   { ensure_directory .config }
-   { link_file .config/herbstluftwm }
-   { link_name .config/nvim ../.vim }
-   { link_file .esrc }
-   { link_file .gitconfig }
-   { link_file .profile }
-   { link_file .vim }
-   { link_file .vimrc }
-   { ensure_directory .vim-tmp }
-   { ensure_directory .vim-undo }
-   { link_file .Xresources }
-   { link_file .xsessionrc }
-
-   { ensure_directory bin }
-   { ensure_directory src }
-   { ensure_directory tmp }
-)
 
 #####
 
