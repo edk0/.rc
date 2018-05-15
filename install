@@ -211,8 +211,6 @@ if {result $#uninst} {
       exit 1
    }
 
-   mkdir -p $HOME/.vim-tmp
-
    for (target=$targets) {
       local (r=<=$target) {
          if {! result $r} {
