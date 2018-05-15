@@ -164,6 +164,7 @@ fn prepare_target n f {
             $f
          }
       }
+      f = ()
       let (p=$HOME/$n) {
          if {result $#backuppath} {
             remove = {
