@@ -13,7 +13,7 @@ URxvt.visualBell: false
 URxvt.urgentOnBell: true
 
 URxvt.perl-ext-common: default,matcher
-URxvt.url-launcher: /usr/bin/google-chrome
+URxvt.url-launcher: /usr/bin/firefox
 URxvt.matcher.button: 1
 URxvt.keysym.C-Delete: perl:matcher:last
 URxvt.keysym.M-Delete: perl:matcher:list
@@ -23,7 +23,7 @@ URxvt.preeditType: Root
 URxvt.fading:    40
 URxvt.fadeColor: #20201d
 
-urxvt-irc.boldFont: 
+urxvt-irc.boldFont:
 urxvt-irc.intensityStyles: true
 urxvt-irc.scrollBar: false
 
