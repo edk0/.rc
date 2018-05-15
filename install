@@ -143,6 +143,7 @@ fn link_name n t {
 
 targets = (
    { link_file .config/herbstluftwm }
+   { link_name .config/nvim ../.vim }
    { link_file .esrc }
    { link_file .gitconfig }
    { link_file .profile }
