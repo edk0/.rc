@@ -168,6 +168,10 @@ targets = (
    { ensure_directory .vim-undo }
    { link_file .Xresources }
    { link_file .xsessionrc }
+
+   { ensure_directory bin }
+   { ensure_directory src }
+   { ensure_directory tmp }
 )
 
 #####
