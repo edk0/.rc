@@ -91,9 +91,10 @@ fn backup_dir {
    result $backup_dir
 }
 
-# Link a particular filename from $HOME and append the complementary
-# operation to the uninstaller script
-fn link_file n {
+# Uninstaller-y groundwork for creating a file
+# move it out of the way if we're forcing, execute f, and then create an
+# uninstall line
+fn prepare_target n f {
    echo + $n
    local (backuppath=) {
       local (linkpath=(<={relpath $n})^$linkpath) {
@@ -101,13 +102,13 @@ fn link_file n {
             if {! result $#force} {
                backuppath = <={backup_dir} ^ /$n
                mv $HOME/$n $backuppath
-               ln -fs $linkpath/$n $HOME/$n
+               $f
             } {
                echo error: $HOME/$n exists
                return 'file exists'
             }
          } {
-            ln -s $linkpath/$n $HOME/$n
+            $f
          }
       }
       let (p=$HOME/$n) {
@@ -128,17 +129,27 @@ fn link_file n {
    }
 }
 
+# Link a particular filename from $HOME and append the complementary
+# operation to the uninstaller script
+fn link_file n {
+   prepare_target $n {ln -s $linkpath/$n $HOME/$n}
+}
+
+fn link_name n t {
+	prepare_target $n {ln -s $t $HOME/$n}
+}
+
 #####
 
 targets = (
-   .config/herbstluftwm
-   .esrc
-   .gitconfig
-   .profile
-   .vim
-   .vimrc
-   .Xresources
-   .xsessionrc
+   { link_file .config/herbstluftwm }
+   { link_file .esrc }
+   { link_file .gitconfig }
+   { link_file .profile }
+   { link_file .vim }
+   { link_file .vimrc }
+   { link_file .Xresources }
+   { link_file .xsessionrc }
 )
 
 #####
@@ -172,7 +183,7 @@ if {result $#uninst} {
    mkdir -p $HOME/.vim-tmp
 
    for (target=$targets) {
-      local (r=<={link_file $target}) {
+      local (r=<=$target) {
          if {! result $r} {
             echo error occurred, uninstalling!
             rollback
