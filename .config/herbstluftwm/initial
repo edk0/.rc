@@ -13,6 +13,7 @@ fn start_in tag rules a {
    }
    hc rule once maxage\=20 $rules tag\=$^tag
    nohup $a >/dev/null >[2=1] &
+   true
 }
 
 # delay starting ssh-dependent things until we have identities loaded
@@ -25,4 +26,4 @@ fork {
    start_in 1 'instance=urxvt-irc' urxvt -name urxvt-irc -e mosh vimes -- tmux attach -t irc
 }
 
-start_in 2 'class=google-chrome' google-chrome --new-window
+start_in 2 'class=Firefox' firefox
