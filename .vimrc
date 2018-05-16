@@ -48,7 +48,6 @@ set nrformats=hex
 let loaded_netrwPlugin = 1
 
 set autoindent copyindent preserveindent
-filetype indent on
 
 set tabstop=4 softtabstop=4 shiftwidth=4
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
@@ -73,7 +72,7 @@ nnoremap gr :Unite -start-insert grep:.:-isR<CR>
 nnoremap gt :UniteWithCursorWord grep:.:-isR<CR>
 
 " searching
-set ignorecase smartcase incsearch
+set ignorecase smartcase incsearch nohlsearch
 
 " remove trailing whitespace; works on one line or selection
 noremap <silent> sw ms$:s/\s\+$//<CR>g`s
@@ -93,4 +92,5 @@ let g:unsullied_height=5
 
 
 " things
-autocmd BufNewFile,BufRead /home/edk/src/fireplace/* set noexpandtab
+autocmd BufNewFile,BufRead /home/edk/src/socksrouter/* set noexpandtab
+autocmd BufNewFile,BufRead /home/edk/src/iocaine/* set noexpandtab
