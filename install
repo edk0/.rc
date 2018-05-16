@@ -34,14 +34,24 @@ targets = (
    { ensure_directory src }
    { ensure_directory tmp }
 
-   # handle this specially because .ssh permissions are important
-   { ensure_directory .ssh { chmod go-rwx $HOME/.ssh } }
-   { copy_file .ssh/config { chmod go-rwx $HOME/.ssh/config } }
-   { ensure_file .ssh/config.local }
-   # an extremely non-general thing that replaces 'Include' directives
-   # with their referents if ssh doesn't support Include yet
-   { preprocess_ssh_conf .ssh/config }
+   { with_umask 077
+      # handle this specially because .ssh permissions are important
+      { ensure_directory .ssh }
+      { copy_file .ssh/config }
+      { ensure_file .ssh/config.local }
+      # an extremely non-general thing that replaces 'Include' directives
+      # with their referents if ssh doesn't support Include yet
+      { preprocess_ssh_conf .ssh/config }
+   }
 )
+
+fn with_umask mask targets {
+   restore = `umask
+   umask $mask
+   for (target=$targets) { r=<=$target; result $r || break }
+   umask $restore
+   return $r
+}
 
 # Link a particular filename from $HOME and append the complementary
 # operation to the uninstaller script
