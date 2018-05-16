@@ -36,19 +36,24 @@ targets = (
 
    # handle this specially because .ssh permissions are important
    { ensure_directory .ssh { chmod go-rwx $HOME/.ssh } }
-   { link_file .ssh/config }
+   { copy_file .ssh/config { chmod go-rwx $HOME/.ssh/config } }
    { ensure_file .ssh/config.local }
 )
 
 # Link a particular filename from $HOME and append the complementary
 # operation to the uninstaller script
-fn link_file n {
-   prepare_target $n {ln -s $linkpath/$n $HOME/$n}
+fn link_file n f {
+   prepare_target $n {ln -s $linkpath/$n $HOME/$n && $f}
 }
 
 # Make a filename (relative to $HOME) an arbitrary symbolic link
-fn link_name n t {
-   prepare_target $n {ln -s $t $HOME/$n}
+fn link_name n t f {
+   prepare_target $n {ln -s $t $HOME/$n && $f}
+}
+
+# Copy a file
+fn copy_file n f {
+   prepare_target $n {cp $n $HOME/$n && $f}
 }
 
 # Ensure a name relative to $HOME is a directory. Can't be forced if
