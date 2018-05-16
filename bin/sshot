@@ -3,4 +3,4 @@
 F=$(mktemp -t "XXXXXXXX.png")
 scrot -z "$@" "$F"
 U=$(ssh upload < "$F")
-google-chrome "$U"
+firefox "$U"
