@@ -81,6 +81,8 @@ fn ensure_file n f {
 
 #####
 
+fn-cd = $&cd
+
 catch @ {
    fn realpath p { readlink -f $p }
 } {
