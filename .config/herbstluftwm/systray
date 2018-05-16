@@ -14,7 +14,8 @@ pkill $(echo "$TRAYCMD"|cut -d' ' -f1)
 hc rule once maxage=60 class="stalonetray" hook=tray_fixes_winid
 hc rule once maxage=60 class="dzen"        hook=tray_fixes_raise
 
-wide=0
+wide=16
+hc emit_hook panel_pad "$wide"
 
 (
 	hc --idle 'rule' &
@@ -34,6 +35,7 @@ wide=0
 			"tray_fixes_winid")
 				wid="$arg"
 				hc raise "$wid"
+				hc emit_hook panel_pad "$wide"
 				;;
 			"tray_fixes_raise")
 				hc raise "$wid"
