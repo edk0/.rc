@@ -19,11 +19,6 @@ Mod=Mod4   # Use the super key as the main modifier
 hc keybind $Mod-Shift-q quit
 hc keybind $Mod-Shift-r reload
 hc keybind $Mod-Shift-c close
-hc keybind $Mod-Control-c spawn xkill
-hc keybind $Mod-Return spawn urxvt
-hc keybind $Mod-Alt-Return spawn /home/edk/src/cool-retro-term/cool-retro-term
-hc keybind $Mod-d spawn dmenu_run -p '$'
-hc keybind $Mod-x spawn slock
 
 hc keybind Print       spawn sshot
 hc keybind Alt-Print   spawn sshot -u

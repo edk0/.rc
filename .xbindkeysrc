@@ -1,2 +1,14 @@
+"dmenu_run -p '$'"
+  Mod4 + d
+"sshot"
+  Print
+"sshot -u"
+  Mod1 + Print
 "sshot -s"
   Control + Release + Print
+"slock"
+  Mod4 + x
+"urxvt"
+  Mod4 + Return
+"xkill"
+  Mod4 + Control + C
