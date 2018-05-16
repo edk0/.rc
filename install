@@ -38,6 +38,9 @@ targets = (
    { ensure_directory .ssh { chmod go-rwx $HOME/.ssh } }
    { copy_file .ssh/config { chmod go-rwx $HOME/.ssh/config } }
    { ensure_file .ssh/config.local }
+   # an extremely non-general thing that replaces 'Include' directives
+   # with their referents if ssh doesn't support Include yet
+   { preprocess_ssh_conf .ssh/config }
 )
 
 # Link a particular filename from $HOME and append the complementary
@@ -82,6 +85,31 @@ fn ensure_file n f {
       touch $HOME/$n
       $f
    }
+}
+
+# unbreak ssh config if there is no Include
+# this doesn't do its own rollback and depends on .ssh/config
+# being copy_file'd
+fn preprocess_ssh_conf n f {
+   fn include_ssh_conf {
+      line = <={%read}
+      while {! result $#line} {
+         stripped = `` \n {echo $line | sed 's/^\s\+//'}
+         include = <= {~~ $stripped Include\ *}
+         if {! result $#include} {
+            if {! ~ $include /*} {include = $HOME/.ssh/$include}
+            include_ssh_conf < $include
+         } {
+            echo $line
+         }
+         line = <={%read}
+      }
+   }
+   echo ! $n
+   output = `` \n {ssh -o Include >[2=1]}
+   ~ $output *'Bad configuration option'* || return
+   mv $HOME/$n $HOME/$n.tmp
+   include_ssh_conf < $HOME/$n.tmp > $HOME/$n
 }
 
 #####
