@@ -3,14 +3,14 @@
 tar tf $1 | {
 	line = <={%read}
 	prefix = <={~~ $line */}
-	!result $#prefix && !grep -vqF $prefix ^ '/' && echo extracting to $prefix >[2=1]
+	!result $#prefix && !grep -vqF $prefix ^ '/' && echo extracting to $prefix >[1=2]
 } && tar xf $1 || {
 	(name _) = <={~~ $1 *.tar.* *.*}
 	if {result $#name} {
-		echo can\'t work out the name >[2=1]
+		echo can\'t work out the name >[1=2]
 		exit 1
 	}
 	mkdir $name || exit 1
-	echo extracting to $name >[2=1]
+	echo extracting to $name >[1=2]
 	tar -C $name -xf $1
 }
