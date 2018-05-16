@@ -37,9 +37,9 @@ fn %makealias name f {
 		fn-$name = $%runalias
 	} {
 		# special-case empty $f to unbind the command
+		fn-$name = $(-builtin-$name)
 		-alias-$name =
 		-builtin-$name =
-		fn-$name =
 	}
 	true
 }
