@@ -8,7 +8,7 @@
   Control + Release + Print
 "slock"
   Mod4 + x
-"urxvt"
+"urxvtc"
   Mod4 + Return
 "xkill"
   Mod4 + Control + C
