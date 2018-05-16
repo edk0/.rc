@@ -27,7 +27,10 @@ fn ftime {
 fn power {
    state = `{bat_prop state}
    pct   = `{bat_dbus Percentage}
-   if {~ $state fully-charged} {
+   if {result $#bat} {
+		echo -n '^fg(' ^ $text ^ ')no battery'
+		return
+   } {~ $state fully-charged} {
 	   echo -n '^fg(' ^ $text ^ ')ac' ^ $sep ^ '^fg(' ^ $hilight ^ ')' ^ $pct ^ '%^fg( ^ ' ^ $text ^ ')'
    } {~ $state charging} {
 	   echo -n '^fg(' ^ $text ^ ')ac' ^ $sep ^ '^fg(' ^ $hilight ^ ')' ^ $pct ^ '%^fg( ^ ' ^ $text ^ ')' ^\
