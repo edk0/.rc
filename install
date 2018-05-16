@@ -37,6 +37,7 @@ targets = (
    # handle this specially because .ssh permissions are important
    { ensure_directory .ssh { chmod go-rwx $HOME/.ssh } }
    { link_file .ssh/config }
+   { ensure_file .ssh/config.local }
 )
 
 # Link a particular filename from $HOME and append the complementary
@@ -61,6 +62,19 @@ fn ensure_directory n f {
       echo error: $HOME/$n exists and is not a directory
    } {
       mkdir -p $HOME/$n
+      $f
+   }
+}
+
+# Ensure a name is a file
+fn ensure_file n f {
+   echo \= $n
+   if {[ -f $HOME/$n ]} {
+      return
+   } {[ -e $HOME/$n ]} {
+      echo error: $HOME/$n exists and is not a file
+   } {
+      touch $HOME/$n
       $f
    }
 }
