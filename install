@@ -3,8 +3,8 @@
 
 # does several things:
 
-# - git update --init --recursive
-# - makes any subdirectory with a
+# - git submodule update --init --recursive
+# - makes any subdirectory with a Makefile
 # - create symlinks from $HOME to here.
 #   if here is inside $HOME, the links are relative.
 # - generates an uninstall script, usually invoked by itself.
