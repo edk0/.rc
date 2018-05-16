@@ -4,7 +4,7 @@ bat = `{upower -e|grep '/battery'|head -1}
 sep = ', '
 
 fn bat_prop prop {
-   upower -i $bat | sed -r 's,\s+([^:]+):\s+(.*),\1=\2,;t;d' | grep -F $prop\= | cut -f2 -d\=
+	upower -i $bat | sed -r 's,\s+([^:]+):\s+(.*),\1=\2,;t;d' | grep -F $prop\= | cut -f2 -d\=
 }
 
 fn bat_dbus prop {
@@ -21,33 +21,33 @@ fn bat_dbus prop {
 }
 
 fn ftime {
-   date -u -d \@^(`` '' cat) +%H:%M
+	date -u -d \@^(`` '' cat) +%H:%M
 }
 
 fn power {
-   state = `{bat_prop state}
-   pct   = `{bat_dbus Percentage}
-   if {result $#bat} {
+	state = `{bat_prop state}
+	pct	= `{bat_dbus Percentage}
+	if {result $#bat} {
 		echo -n '^fg(' ^ $text ^ ')no battery'
 		return
-   } {~ $state fully-charged} {
-	   echo -n '^fg(' ^ $text ^ ')ac' ^ $sep ^ '^fg(' ^ $hilight ^ ')' ^ $pct ^ '%^fg( ^ ' ^ $text ^ ')'
-   } {~ $state charging} {
-	   echo -n '^fg(' ^ $text ^ ')ac' ^ $sep ^ '^fg(' ^ $hilight ^ ')' ^ $pct ^ '%^fg( ^ ' ^ $text ^ ')' ^\
-	           $sep ^ `{bat_dbus TimeToFull|ftime}
-   } {~ $state discharging} {
-      local (tte = `{bat_dbus TimeToEmpty}) \
-      local (colour = <={ if {[ $tte -le 1200 ]} {result $urgent} {result $text} }) {
-	      echo -n '^fg(' ^ $text ^ ')battery' ^ $sep ^ '^fg(' ^ $hilight ^ ')' ^ $pct ^ '%^fg( ' ^ $text ^ ')' ^\
-	              $sep ^ '^fg(' ^ $colour ^ ')' ^ `{echo $tte|ftime}
-	   }
-   } {
-      echo -n 'error'
-   }
-   rate = `{bat_dbus EnergyRate}
-   if {! ~ $state fully-charged} {
-      echo '^fg(' ^ $text ^ ')' ^ $sep ^ `{printf '%0.1fW' $rate}
-   } {
-      echo
-   }
+	} {~ $state fully-charged} {
+		echo -n '^fg(' ^ $text ^ ')ac' ^ $sep ^ '^fg(' ^ $hilight ^ ')' ^ $pct ^ '%^fg( ^ ' ^ $text ^ ')'
+	} {~ $state charging} {
+		echo -n '^fg(' ^ $text ^ ')ac' ^ $sep ^ '^fg(' ^ $hilight ^ ')' ^ $pct ^ '%^fg( ^ ' ^ $text ^ ')' ^\
+		        $sep ^ `{bat_dbus TimeToFull|ftime}
+	} {~ $state discharging} {
+		local (tte = `{bat_dbus TimeToEmpty}) \
+		local (colour = <={ if {[ $tte -le 1200 ]} {result $urgent} {result $text} }) {
+			echo -n '^fg(' ^ $text ^ ')battery' ^ $sep ^ '^fg(' ^ $hilight ^ ')' ^ $pct ^ '%^fg( ' ^ $text ^ ')' ^\
+			        $sep ^ '^fg(' ^ $colour ^ ')' ^ `{echo $tte|ftime}
+		}
+	} {
+		echo -n 'error'
+	}
+	rate = `{bat_dbus EnergyRate}
+	if {! ~ $state fully-charged} {
+		echo '^fg(' ^ $text ^ ')' ^ $sep ^ `{printf '%0.1fW' $rate}
+	} {
+		echo
+	}
 }
