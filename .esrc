@@ -48,7 +48,7 @@ cdpath = . ~ ~/src
 if {! ~ $path $ESRC_DIR/bin} {
 	path = $ESRC_DIR/bin $path
 }
-if {! ~ $path $home/bin && [ -d $home/bin ]} {
+if {! ~ $path $home/bin} {
 	path = $home/bin $path
 }
 
