@@ -101,12 +101,19 @@ hc pad $monitor $panel_height
       printf 'net\t%s\n' `` \n net_state || break
       sleep 5
    } &
+   imapcounter | while {!r=<=%read} {
+      (msgs unread) = <={~~ $r *\ *}
+      mailcolor = $hilight
+      if {~ $unread 0} {mailcolor = $text}
+      printf 'mail\t%s\n' '^fg('$mailcolor')'$unread'^fg('$text')/'$msgs || break
+   } &
    hc --idle
 } | {
    tags = `` \n\t {hc tag_status $monitor}
    visible = 0
    date=''
    windowtitle=''
+   mailstate='?'
    while {true} {
 
       ### Output ###
@@ -142,7 +149,7 @@ hc pad $monitor $panel_height
       echo -n $separator
       echo -n '^bg('$otherbg')^fg('$otherfg') '`` \n {echo $windowtitle|sed 's,\^,^^,g'}
       # small adjustments
-      right=$separator'^bg() '$powstate' '$separator'^bg() '$netstate' '$separator'^bg() '$date' '$separator
+      right=$separator'^bg() '$mailstate'^bg() '$separator'^bg() '$powstate' '$separator'^bg() '$netstate' '$separator'^bg() '$date' '$separator
       right_text_only=`{echo -n $right | sed 's.\^[^(]*([^)]*)..g'}
       # get width of right aligned text.. and add some space..
       width=`{expr `{echo -n $right_text_only|wc -c} \* 7} #`{textwidth $font $^right_text_only}
@@ -168,6 +175,8 @@ hc pad $monitor $panel_height
          powstate=$args
       } {~ $cmd net} {
          netstate=$args
+      } {~ $cmd mail} {
+         mailstate=$args
       } {~ $cmd panel_pad} {
          pad=$args
       } {~ $cmd quit_panel} {
