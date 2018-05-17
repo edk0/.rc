@@ -55,9 +55,7 @@ fn %sessionrc {
 					if {! result $SSH_CONNECTION} {
 						echo \e[34m^'# '^$host^\e[0m
 					}
-					if {! result $status} {
-						ES_PROMPT=\001\e[31m\002^';'^\001\e[0m\002
-					} {~ $uid 0} {
+					if {~ $uid 0} {
 						ES_PROMPT=\001\e[30m\e[41m\002^';'^\001\e[0m\002
 					} {%outdated_env} {
 						ES_PROMPT=\001\e[30m\e[43m\002^';'^\001\e[0m\002
@@ -67,7 +65,11 @@ fn %sessionrc {
 						ES_PROMPT=';'
 					}
 					ES_PROMPT = $prompt_prefix ^ $ES_PROMPT
-					prompt = ($ES_PROMPT ^ ' ' '')
+					if {! result $status} {
+						prompt = ($prompt_prefix ^ \001\e[31m\002^';'^\001\e[0m\002 ^ ' ' '')
+					} {
+						prompt = ($ES_PROMPT ^ ' ' '')
+					}
 					status =
 				}
 			}
