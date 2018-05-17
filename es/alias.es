@@ -32,8 +32,8 @@ fn %expandalias name args {
 # low-level interface: make an alias out of a function that expands its args
 fn %makealias name f {
 	if {! result $f} {
+		if {%count $(-alias-$name)} {-builtin-$name = $(fn-$name)}
 		-alias-$name = $f
-		if {! ~ $(fn-$name) $%runalias} {-builtin-$name = $(fn-$name)}
 		fn-$name = $%runalias
 	} {
 		# special-case empty $f to unbind the command
