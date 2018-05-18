@@ -18,8 +18,12 @@
 # rollback-ing.
 targets = (
    { ensure_directory .config }
+   { ensure_directory .config/git }
+   { link_as .config/git/ignore ignore }
    { link_file .config/herbstluftwm }
    { link_name .config/nvim ../.vim }
+
+   { link_as .cvsignore ignore }
    { link_file .esrc }
    { link_file .gitconfig }
    { link_file .profile }
@@ -58,6 +62,10 @@ fn with_umask mask targets {
 # operation to the uninstaller script
 fn link_file n f {
    prepare_target $n {ln -s $linkpath/$n $HOME/$n && $f}
+}
+
+fn link_as n t f {
+   prepare_target $n {ln -s $linkpath/$t $HOME/$n && $f}
 }
 
 # Make a filename (relative to $HOME) an arbitrary symbolic link
