@@ -28,7 +28,7 @@ fn power {
 	state = `{bat_prop state}
 	pct	= `{bat_dbus Percentage}
 	if {result $#bat} {
-		echo -n '^fg(' ^ $text ^ ')no battery'
+		echo '!'
 		return
 	} {~ $state fully-charged} {
 		echo -n '^fg(' ^ $text ^ ')ac' ^ $sep ^ '^fg(' ^ $hilight ^ ')' ^ $pct ^ '%^fg( ^ ' ^ $text ^ ')'

@@ -149,7 +149,11 @@ hc pad $monitor $panel_height
       echo -n $separator
       echo -n '^bg('$otherbg')^fg('$otherfg') '`` \n {echo $windowtitle|sed 's,\^,^^,g'}
       # small adjustments
-      right=$separator'^bg() '$mailstate'^bg() '$separator'^bg() '$powstate' '$separator'^bg() '$netstate' '$separator'^bg() '$date' '$separator
+      power_column = ''
+      if {! ~ $powstate !} {
+         power_column = $powstate' '$separator'^bg() '
+      }
+      right=$separator'^bg() '$mailstate'^bg() '$separator'^bg() '$power_column^$netstate' '$separator'^bg() '$date' '$separator
       right_text_only=`{echo -n $right | sed 's.\^[^(]*([^)]*)..g'}
       # get width of right aligned text.. and add some space..
       width=`{expr `{echo -n $right_text_only|wc -c} \* 7} #`{textwidth $font $^right_text_only}
