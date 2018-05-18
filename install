@@ -191,7 +191,7 @@ fn relpath f {
    if {result $relative} return
    local (t='') {
       while {~ $f ?*/?*} {
-         f = (<={~~ f ?*/*})(3)
+         f = `` \n {echo $f | sed 's,^[^/]\+/,,'}
          t = $t ^ '../'
       }
       result $t
