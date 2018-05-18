@@ -20,8 +20,8 @@ fn %sessionrc {
 		fn %dispatch cmd {
 			let (pwd=`` \n {pwd >[2] /dev/null}; cw=<={~~ $cmd \{*\}}) {
 				# While we're running a command, set the xterm title to
-				# PWD - command args
-				%set_title $pwd^' - '^$cw
+				# PWD: command args
+				%set_title $pwd^': '^$cw
 			}
 			let (result = <={$cmd}) {
 				local(r2=) if {~ $result *[~0-9-]*} {
