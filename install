@@ -51,6 +51,20 @@ targets = (
    )}
 )
 
+fn optional targets {
+   for (target=$targets) { r=<=$target; result $r || break }
+   if {! result $r} {echo : optional target failed: $r}
+   return 0
+}
+
+fn with_local name value targets {
+   value = <={catch {$&noreturn @ e args { return $args }} { result <=$value }}
+   local (($name)=$value) {
+      for (target=$targets) { r=<=$target; result $r || break }
+   }
+   return $r
+}
+
 fn with_umask mask targets {
    restore = `umask
    umask $mask
@@ -89,7 +103,7 @@ fn ensure_directory n f {
    } {[ -e $HOME/$n ]} {
       echo error: $HOME/$n exists and is not a directory
    } {
-      mkdir -p $HOME/$n
+      mkdir -p $HOME/$n || return 'can''t create '$HOME/$n' or a parent'
       $f
    }
 }
