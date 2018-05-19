@@ -151,6 +151,13 @@ fn preprocess_ssh_conf n f {
    rm $scratch
 }
 
+fn get_firefox_profile {
+   if {[ ! -f $HOME/.mozilla/firefox/profiles.ini ]} {
+      throw error 'no firefox profile exists'
+   }
+   return `` \n {sed -n '0,/^Default\=1/bx;/^$/,$d;:x;/^Path\=/{s/^Path=//;p}' < $HOME/.mozilla/firefox/profiles.ini | tail -1}
+}
+
 #####
 
 fn-cd = $&cd
