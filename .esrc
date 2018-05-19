@@ -45,6 +45,9 @@ cdpath = . ~ ~/src
 
 # set up our PATH. i want sourcing .esrc to be idempotent, so add things only
 # if they're not already there. ~/bin should override $ESRC_DIR/bin.
+if {! ~ $path $home/.local/bin} {
+	path = $home/.local/bin $path
+}
 if {! ~ $path $ESRC_DIR/bin} {
 	path = $ESRC_DIR/bin $path
 }

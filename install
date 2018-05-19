@@ -23,6 +23,8 @@ targets = (
    { link_file .config/herbstluftwm }
    { link_name .config/nvim ../.vim }
 
+   { ensure_directory .local/bin }
+
    { link_as .cvsignore ignore }
    { link_file .esrc }
    { link_file .gitconfig }
