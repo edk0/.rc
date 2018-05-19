@@ -242,6 +242,7 @@ fn prepare_target n f {
          if {[ -f $HOME/$n ]} {
             if {! result $#force} {
                backuppath = <={backup_dir} ^ /$n
+               mkdir -p `` \n {dirname $backuppath}
                mv $HOME/$n $backuppath
                $f
             } {
