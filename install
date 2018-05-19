@@ -105,6 +105,10 @@ fn copy_file n f {
    prepare_target $n {cp $n $HOME/$n && $f}
 }
 
+fn copy_as n t f {
+   prepare_target $n {cp $t $HOME/$n && $f}
+}
+
 # Ensure a name relative to $HOME is a directory. Can't be forced if
 # it's not a directory; uninstalling would have to remove the dir
 # again, which I don't like.
