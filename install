@@ -24,6 +24,15 @@ targets = (
 
    { ensure_directory .local/bin }
 
+   { ensure_directory .mozilla/firefox }
+   { optional (
+      { with_local ff_profile {get_firefox_profile} (
+         { ensure_directory .mozilla/firefox/$ff_profile/chrome }
+         { link_as .mozilla/firefox/$ff_profile/chrome/bindings.xml firefox/bindings.xml }
+         { link_as .mozilla/firefox/$ff_profile/chrome/userChrome.css firefox/userChrome.css }
+      )}
+   )}
+
    { link_as .cvsignore ignore }
    { link_file .esrc }
    { link_file .gitconfig }
