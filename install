@@ -61,7 +61,7 @@ targets = (
 )
 
 fn optional targets {
-   for (target=$targets) { r=<=$target; result $r || break }
+   for (target=$targets) { r=<=$target || break }
    if {! result $r} {echo : optional target failed: $r}
    return 0
 }
@@ -72,7 +72,7 @@ fn with_local name value targets {
       result $r || return $r
    }
    local (($name)=$value) {
-      for (target=$targets) { r=<=$target; result $r || break }
+      for (target=$targets) { r=<=$target || break }
    }
    return $r
 }
@@ -80,7 +80,7 @@ fn with_local name value targets {
 fn with_umask mask targets {
    restore = `umask
    umask $mask
-   for (target=$targets) { r=<=$target; result $r || break }
+   for (target=$targets) { r=<=$target || break }
    umask $restore
    return $r
 }
