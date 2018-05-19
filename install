@@ -17,7 +17,6 @@
 # They're defined immediately below. They take care of their own
 # rollback-ing.
 targets = (
-   { ensure_directory .config }
    { ensure_directory .config/git }
    { link_as .config/git/ignore ignore }
    { link_file .config/herbstluftwm }
@@ -41,7 +40,7 @@ targets = (
    { ensure_directory src }
    { ensure_directory tmp }
 
-   { with_umask 077
+   { with_umask 077 (
       # handle this specially because .ssh permissions are important
       { ensure_directory .ssh }
       { copy_file .ssh/config }
@@ -49,7 +48,7 @@ targets = (
       # an extremely non-general thing that replaces 'Include' directives
       # with their referents if ssh doesn't support Include yet
       { preprocess_ssh_conf .ssh/config }
-   }
+   )}
 )
 
 fn with_umask mask targets {
