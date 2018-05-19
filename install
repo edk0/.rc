@@ -28,8 +28,8 @@ targets = (
    { optional (
       { with_local ff_profile {get_firefox_profile} (
          { ensure_directory .mozilla/firefox/$ff_profile/chrome }
-         { link_as .mozilla/firefox/$ff_profile/chrome/bindings.xml firefox/bindings.xml }
-         { link_as .mozilla/firefox/$ff_profile/chrome/userChrome.css firefox/userChrome.css }
+         { copy_as .mozilla/firefox/$ff_profile/chrome/bindings.xml firefox/bindings.xml }
+         { copy_as .mozilla/firefox/$ff_profile/chrome/userChrome.css firefox/userChrome.css }
       )}
    )}
 
