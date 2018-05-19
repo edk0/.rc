@@ -58,7 +58,10 @@ fn optional targets {
 }
 
 fn with_local name value targets {
-   value = <={catch {$&noreturn @ e args { return $args }} { result <=$value }}
+   let (r=) {
+      catch @ e args { r = $args } { value = <=$value }
+      result $r || return $r
+   }
    local (($name)=$value) {
       for (target=$targets) { r=<=$target; result $r || break }
    }
