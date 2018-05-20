@@ -13,6 +13,9 @@
 # install f  to install even if some files already exist
 #            they will be backed up, uninstall will restore
 
+# if yes, filesystem-touching commands are echoed
+DEBUG=no
+
 # A list of operations to be attempted in order to install our stuff.
 # They're defined immediately below. They take care of their own
 # rollback-ing.
@@ -170,6 +173,28 @@ fn get_firefox_profile {
       throw error 'no firefox profile exists'
    }
    return `` \n {sed -n '0,/^Default\=1/bx;/^$/,$d;:x;/^Path\=/{s/^Path=//;p}' < $HOME/.mozilla/firefox/profiles.ini | tail -1}
+}
+
+#####
+
+fn dbg x {
+   let (r=<=$x) { echo \$ $^x\t-\> $^r >[1=2] }
+   return $r
+}
+
+debugme = @ {
+   local (fn-$0=) { dbg $0 $* }
+}
+
+if {~ $DEBUG yes} {
+   fn-git = $debugme
+   fn-make = $debugme
+   fn-cp = $debugme
+   fn-ln = $debugme
+   fn-mkdir = $debugme
+   fn-mktemp = $debugme
+   fn-mv = $debugme
+   fn-rm = $debugme
 }
 
 #####
