@@ -45,7 +45,7 @@ def navigate(url):
 def main(argv):
     ct = get_content_type(argv[1])
     typ, _, subtype = ct.partition('/')
-    if typ in ('video', 'image', 'audio'):
+    if typ in ('video', 'audio'):
         enqueue(argv[1])
     else:
         navigate(argv[1])
