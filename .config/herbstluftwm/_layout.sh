@@ -65,40 +65,46 @@ if [ -z "$no_tag_1" ]; then
 fi
 
 # class=Firefox instance=Navigator
+herbstclient --idle | while read hook name extra; do
+  if [ "$hook" != rule ]; then continue; fi
+  case "$name" in
+    _reactor1_hook0)
+      if [ -z "$no_tag_3" ]; then
+        herbstclient rule once maxage=20 class=Firefox instance=Navigator tag=3 index=01
+        nohup /usr/lib/firefox/firefox >/dev/null 2>&1 &
+      fi
+      break
+    ;;
+  esac
+done &
 if [ -z "$no_tag_2" ]; then
-  herbstclient rule once maxage=20 class=Firefox instance=Navigator tag=2 index=
+  herbstclient rule once maxage=20 class=Firefox instance=Navigator tag=2 index= hook=_reactor1_hook0
   nohup /usr/lib/firefox/firefox >/dev/null 2>&1 &
+else
+  herbstclient emit_hook rule _reactor1_hook0
 fi
 
 # class=URxvt instance=urxvt
 herbstclient --idle | while read hook name extra; do
   if [ "$hook" != rule ]; then continue; fi
   case "$name" in
-    _reactor1_hook0)
+    _reactor2_hook0)
       if [ -z "$no_tag_3" ]; then
-        herbstclient rule once maxage=20 class=URxvt instance=urxvt tag=3 index=00 hook=_reactor1_hook1
+        herbstclient rule once maxage=20 class=URxvt instance=urxvt tag=3 index=00 hook=_reactor2_hook1
         nohup urxvt -cd /home/edk >/dev/null 2>&1 &
       else
-        herbstclient emit_hook rule _reactor1_hook1
+        herbstclient emit_hook rule _reactor2_hook1
       fi
     ;;
-    _reactor1_hook1)
+    _reactor2_hook1)
       if [ -z "$no_tag_3" ]; then
-        herbstclient rule once maxage=20 class=URxvt instance=urxvt tag=3 index=01 hook=_reactor1_hook2
+        herbstclient rule once maxage=20 class=URxvt instance=urxvt tag=3 index=10 hook=_reactor2_hook2
         nohup urxvt -cd /home/edk >/dev/null 2>&1 &
       else
-        herbstclient emit_hook rule _reactor1_hook2
+        herbstclient emit_hook rule _reactor2_hook2
       fi
     ;;
-    _reactor1_hook2)
-      if [ -z "$no_tag_3" ]; then
-        herbstclient rule once maxage=20 class=URxvt instance=urxvt tag=3 index=10 hook=_reactor1_hook3
-        nohup urxvt -cd /home/edk >/dev/null 2>&1 &
-      else
-        herbstclient emit_hook rule _reactor1_hook3
-      fi
-    ;;
-    _reactor1_hook3)
+    _reactor2_hook2)
       if [ -z "$no_tag_3" ]; then
         herbstclient rule once maxage=20 class=URxvt instance=urxvt tag=3 index=11
         nohup urxvt -cd /home/edk >/dev/null 2>&1 &
@@ -108,8 +114,8 @@ herbstclient --idle | while read hook name extra; do
   esac
 done &
 if [ -z "$no_tag_1" ]; then
-  herbstclient rule once maxage=20 class=URxvt instance=urxvt tag=1 index=0 hook=_reactor1_hook0
+  herbstclient rule once maxage=20 class=URxvt instance=urxvt tag=1 index=0 hook=_reactor2_hook0
   nohup urxvt -cd /home/edk >/dev/null 2>&1 &
 else
-  herbstclient emit_hook rule _reactor1_hook0
+  herbstclient emit_hook rule _reactor2_hook0
 fi
