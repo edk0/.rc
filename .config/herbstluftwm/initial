@@ -4,26 +4,36 @@
 
 fn hc { herbstclient $* }
 
-fn start_in tag rules a {
-   clients=`{
-      hc attr tags.by-name.$tag.client_count
-   }
-   if {[ $clients -ge 1 ]} {
-      return
-   }
-   hc rule once maxage\=20 $rules tag\=$^tag
-   nohup $a >/dev/null >[2=1] &
-   true
+fn if_empty tag f {
+	clients=`{
+		hc attr tags.by-name.$tag.client_count
+	}
+	if {[ $clients -ge 1 ]} {
+		return
+	}
+	$f
+}
+
+fn start_in tag index rules a {
+	hc rule once maxage\=20 $rules tag\=$^tag index\=$^index
+	nohup $a >/dev/null >[2=1] &
+	true
 }
 
 # delay starting ssh-dependent things until we have identities loaded
 # if you use pam_ssh or something, this will never trigger. if you don't, it'll helpfully prompt
 # for your passphrase at login
-fork {
-   if {[ `{ssh-add -l|wc -l} -lt 1 ]} {
-	   ssh-add || exit
-   }
-   start_in 1 'instance=urxvt-irc' urxvt -name urxvt-irc -e mosh vimes -- tmux attach -t irc
+if_empty 1 {
+	fork {
+		if {[ `{ssh-add -l|wc -l} -lt 1 ]} {
+			ssh-add || exit
+		}
+		start_in 1 11 'instance=urxvt-irc' urxvtc -name urxvt-irc -e mosh vimes -- tmux attach -t irc
+	}
+	start_in 1 10 'instance=linkplayer' linkplayer
+	start_in 1 0 'instance=urxvt-t1-0' urxvtc -name urxvt-t1-0
 }
 
-start_in 2 'class=Firefox' firefox
+if_empty 2 {
+	start_in 2 {} 'class=Firefox' firefox
+}
