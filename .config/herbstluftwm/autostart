@@ -81,9 +81,6 @@ for i in ${!tag_names[@]} ; do
         hc keybind "$Mod-$key" use_index "$i"
         hc keybind "$Mod-Shift-$key" move_index "$i"
     fi
-    if [ -f ~/.config/herbstluftwm/layout/"$tag" ] ; then
-        hc load "$tag" "$(cat ~/.config/herbstluftwm/layout/"$tag")"
-    fi
 done
 
 # cycle through tags

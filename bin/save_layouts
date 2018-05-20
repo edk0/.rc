@@ -1,0 +1,206 @@
+#!/usr/bin/env python3
+
+from os.path import expanduser
+import shlex
+import subprocess
+from Xlib.display import Display
+
+
+RULE_FLAGS = ['once', 'maxage=20']
+
+
+disp = Display()
+A = disp.intern_atom
+
+
+def quote(l):
+    return ' '.join(shlex.quote(s) for s in l)
+
+
+def hc(*a):
+    return subprocess.check_output(['herbstclient', *a]).rstrip(b'\n').decode()
+
+
+def window(id_):
+    if isinstance(id_, str):
+        id_ = int(id_, base=0)
+    win = disp.create_resource_object('window', id_)
+    return win
+
+
+def window_command(win):
+    p = win.get_full_property(A('WM_COMMAND'), A('STRING'))
+    if p is not None:
+        return [x.decode() for x in p.value.split(b'\x00')][:-1]
+    pid = win.get_full_property(A('_NET_WM_PID'), A('CARDINAL'))
+    if pid is None:
+        return None
+    pid = pid.value[0]
+    with open(f"/proc/{pid}/cmdline", 'rb') as f:
+        return [x.decode() for x in f.read().split(b'\x00')][:-1]
+
+
+def window_rules(win):
+    class_ = win.get_wm_class()
+    if class_ is None:
+        return ()
+    p = { 'instance': class_[0], 'class': class_[1] }
+    return frozenset(f"{k}={v}" for k, v in p.items())
+
+
+class WindowRequest:
+    def __init__(self, tag, index, id_):
+        self.tag = tag
+        self.index = index
+        self.win = window(id_)
+        self.rules = window_rules(self.win)
+        self.command = window_command(self.win)
+        self.consequences = [f"tag={self.tag}", f"index={self.index}"]
+
+    def create_cmd(self):
+        return quote(['nohup', *self.command]) + ' >/dev/null 2>&1 &'
+
+    def __repr__(self):
+        return f"<WindowRequest({self.command[0]}) tag={self.tag!r} index={self.index!r}>"
+
+
+def hook_for_request(r, *extra):
+    return ['herbstclient', 'rule', *RULE_FLAGS, *r.rules, *r.consequences, *extra]
+
+
+tag_map = {}
+
+
+def create_windows(rs):
+    ol = []
+    rulegroups = {}
+    for req in rs:
+        if req.rules not in rulegroups:
+            rulegroups[req.rules] = []
+        rulegroups[req.rules].append(req)
+    if () in rulegroups:
+        print(f"Warning: ignoring {len(rulegroups[()])} empty rules")
+        del rulegroups[()]
+    rk = list(rulegroups.keys())
+    for k in rk:
+        for j in rk:
+            if j < k:
+                x = rulegroups[j]
+                del rulegroups[j]
+                rulegroups[k] += x
+    rl = sorted(rulegroups.items(), key=lambda x: len(x[1]))
+    reactors = 0
+    first = True
+    for rule, req in rl:
+        if not first:
+            ol.append('')
+        first = False
+        ol.append(f"# {' '.join(sorted(rule))}")
+        if len(req) == 1:
+            req = req[0]
+            ol.append(f'if [ -z "$no_tag_{tag_map[req.tag]}" ]; then')
+            ol.append('  ' + quote(hook_for_request(req)))
+            ol.append('  ' + req.create_cmd())
+            ol.append('fi')
+            continue
+        reactors += 1
+        reactorname = f"_reactor{reactors}"
+        first, *react = req
+        ol.append('herbstclient --idle | while read hook name extra; do')
+        ol.append('  if [ "$hook" != rule ]; then continue; fi')
+        ol.append('  case "$name" in')
+        for i, r in enumerate(react):
+            ol.append(f"    {reactorname}_hook{i})")
+            if i + 1 < len(react):
+                ol.append(f'      if [ -z "$no_tag_{tag_map[r.tag]}" ]; then')
+                ol.append('        ' + quote(hook_for_request(r, f"hook={reactorname}_hook{i+1}")))
+                ol.append('        ' + r.create_cmd())
+                ol.append('      else')
+                ol.append('        ' + quote(['herbstclient', 'emit_hook', 'rule', f"{reactorname}_hook{i+1}"]))
+                ol.append('      fi')
+            else:
+                ol.append(f'      if [ -z "$no_tag_{tag_map[r.tag]}" ]; then')
+                ol.append('        ' + quote(hook_for_request(r)))
+                ol.append('        ' + r.create_cmd())
+                ol.append('      fi')
+                ol.append('      break')
+            ol.append('    ;;')
+        ol.append('  esac')
+        ol.append('done &')
+        ol.append(f'if [ -z "$no_tag_{tag_map[first.tag]}" ]; then')
+        ol.append('  ' + quote(hook_for_request(first, f"hook={reactorname}_hook0")))
+        ol.append('  ' + first.create_cmd())
+        ol.append('else')
+        ol.append('  ' + quote(['herbstclient', 'emit_hook', 'rule', f"{reactorname}_hook0"]))
+        ol.append('fi')
+    return '\n'.join(ol)
+
+
+def tag_setup(tag, layout):
+    ol = []
+    ol.append(f"""if [ "$(herbstclient attr 'tags.by-name.{tag}.client_count')" -ge 1 ]; then""")
+    ol.append(f'  no_tag_{tag_map[tag]}=1')
+    ol.append('else')
+    ol.append('  ' + quote(['herbstclient', 'load', tag, layout]))
+    ol.append('fi')
+    return '\n'.join(ol)
+
+
+def parse_hc_dump(tag, si, index=''):
+    x = next(si)
+    if x != '(':
+        raise Exception
+    t = ''
+    # read the type thing
+    x = next(si)
+    while x != ' ':
+        t += x
+        x = next(si)
+    # read an argument we can always ignore
+    layout = ''
+    x = next(si)
+    while x not in ' )':
+        layout += x
+        x = next(si)
+    if x == ')':
+        return [], f"({t} {layout})"
+    if t == 'clients':
+        r = []
+        while True:
+            x = next(si)
+            id_ = ''
+            while x not in ' )':
+                id_ += x
+                x = next(si)
+            r.append(WindowRequest(tag, index, id_))
+            if x == ')':
+                break
+        return r, f"({t} {layout})"
+    else:
+        rl, left = parse_hc_dump(tag, si, index + '0')
+        x = next(si)
+        if x != ' ':
+            raise Exception
+        rr, right = parse_hc_dump(tag, si, index + '1')
+        x = next(si)
+        if x != ')':
+            raise Exception
+        return rl + rr, f"({t} {layout} {left} {right})"
+
+
+def main():
+    with open(expanduser('~/.config/herbstluftwm/_layout.sh'), 'w') as f:
+        tags = hc('tag_status').split('\t')[1:-1]
+        rs = []
+        for i, t in enumerate(tags, start=1):
+            name = t[1:]
+            tag_map[name] = i
+            dump = hc('dump', name)
+            rl, layout = parse_hc_dump(name, iter(dump))
+            rs += rl
+            print(tag_setup(name, layout) + '\n', file=f)
+        print(create_windows(rs), file=f)
+
+
+if __name__ == '__main__':
+    main()
