@@ -105,7 +105,7 @@ def create_windows(rs):
             continue
         reactors += 1
         reactorname = f"_reactor{reactors}"
-        first, *react = req
+        head, *react = req
         ol.append('herbstclient --idle | while read hook name extra; do')
         ol.append('  if [ "$hook" != rule ]; then continue; fi')
         ol.append('  case "$name" in')
@@ -127,9 +127,9 @@ def create_windows(rs):
             ol.append('    ;;')
         ol.append('  esac')
         ol.append('done &')
-        ol.append(f'if [ -z "$no_tag_{tag_map[first.tag]}" ]; then')
-        ol.append('  ' + quote(hook_for_request(first, f"hook={reactorname}_hook0")))
-        ol.append('  ' + first.create_cmd())
+        ol.append(f'if [ -z "$no_tag_{tag_map[head.tag]}" ]; then')
+        ol.append('  ' + quote(hook_for_request(head, f"hook={reactorname}_hook0")))
+        ol.append('  ' + head.create_cmd())
         ol.append('else')
         ol.append('  ' + quote(['herbstclient', 'emit_hook', 'rule', f"{reactorname}_hook0"]))
         ol.append('fi')
