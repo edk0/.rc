@@ -1,7 +1,7 @@
 if [ "$(herbstclient attr 'tags.by-name.1.client_count')" -ge 1 ]; then
   no_tag_1=1
 else
-  herbstclient load 1 '(split horizontal:0.500000:1 (clients vertical:0) (split vertical:0.500000:1 (clients vertical:0) (clients vertical:0)))'
+  herbstclient load 1 '(split horizontal:0.550000:1 (clients vertical:0) (split vertical:0.500000:1 (clients vertical:0) (clients vertical:0)))'
 fi
 
 if [ "$(herbstclient attr 'tags.by-name.2.client_count')" -ge 1 ]; then
