@@ -65,7 +65,7 @@ class WindowRequest:
 
 
 def hook_for_request(r, *extra):
-    return ['herbstclient', 'rule', *RULE_FLAGS, *r.rules, *r.consequences, *extra]
+    return ['herbstclient', 'rule', *RULE_FLAGS, *sorted(r.rules), *r.consequences, *extra]
 
 
 tag_map = {}

@@ -54,19 +54,19 @@ fi
 
 # class=mpv instance=linkplayer
 if [ -z "$no_tag_1" ]; then
-  herbstclient rule once maxage=20 instance=linkplayer class=mpv tag=1 index=10
+  herbstclient rule once maxage=20 class=mpv instance=linkplayer tag=1 index=10
   nohup mpv --x11-name=linkplayer --idle=yes --force-window=yes '--input-ipc-server=~/.mpv' '--input-conf=~/.config/mpv/linkplayer.input.conf' null:// >/dev/null 2>&1 &
 fi
 
 # class=URxvt instance=urxvt-irc
 if [ -z "$no_tag_1" ]; then
-  herbstclient rule once maxage=20 instance=urxvt-irc class=URxvt tag=1 index=11
+  herbstclient rule once maxage=20 class=URxvt instance=urxvt-irc tag=1 index=11
   nohup urxvt -cd /home/edk -name urxvt-irc -e mosh vimes -- tmux attach -t irc >/dev/null 2>&1 &
 fi
 
 # class=Firefox instance=Navigator
 if [ -z "$no_tag_2" ]; then
-  herbstclient rule once maxage=20 instance=Navigator class=Firefox tag=2 index=
+  herbstclient rule once maxage=20 class=Firefox instance=Navigator tag=2 index=
   nohup /usr/lib/firefox/firefox >/dev/null 2>&1 &
 fi
 
