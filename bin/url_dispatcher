@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+
+from urllib.parse import urlparse
+import json
+from os.path import expanduser
+import requests
+import socket
+import subprocess
+import sys
+
+
+HOSTS_WHAT_ARE_VIDEOS_PROBABLY = {
+    'youtube.com', 'www.youtube.com',
+    'twitch.tv',
+}
+
+
+def get_content_type(url):
+    r = requests.head(url, allow_redirects=True)
+    url = urlparse(r.url)
+    if url.netloc in HOSTS_WHAT_ARE_VIDEOS_PROBABLY:
+        return 'video/x-ytdl'
+    ct = r.headers.get('Content-Type', 'text/plain').split(';')[0]
+    return ct
+
+
+def enqueue(url):
+    command = {
+        'command': [
+            'loadfile',
+            url,
+            'append-play',
+        ],
+    }
+    command = json.dumps(command)
+    s = socket.socket(socket.AF_UNIX)
+    s.connect(expanduser('~/.mpv'))
+    s.send(command.encode('utf-8') + b'\n')
+
+
+def navigate(url):
+    subprocess.check_call(['/usr/bin/firefox', '--', url])
+
+
+def main(argv):
+    ct = get_content_type(argv[1])
+    typ, _, subtype = ct.partition('/')
+    if typ in ('video', 'image', 'audio'):
+        enqueue(argv[1])
+    else:
+        navigate(argv[1])
+
+
+if __name__ == '__main__':
+    main(sys.argv)

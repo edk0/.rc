@@ -1,0 +1,2 @@
+#!/bin/sh
+mpv --x11-name=linkplayer --idle=yes --force-window=yes --input-ipc-server=~/.mpv null://
