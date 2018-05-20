@@ -20,6 +20,7 @@ targets = (
    { ensure_directory .config/git }
    { link_as .config/git/ignore ignore }
    { link_file .config/herbstluftwm }
+   { link_file .config/mpv }
    { link_name .config/nvim ../.vim }
 
    { ensure_directory .local/bin }
@@ -259,7 +260,7 @@ fn prepare_target n f {
    echo + $n
    local (backuppath=) {
       local (linkpath=(<={relpath $n})^$linkpath) {
-         if {[ -f $HOME/$n ]} {
+         if {[ -e $HOME/$n ]} {
             if {! result $#force} {
                backuppath = <={backup_dir} ^ /$n
                mkdir -p `` \n {dirname $backuppath}
