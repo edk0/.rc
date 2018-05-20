@@ -1,5 +1,20 @@
 #!/usr/bin/env python3
 
+"""
+A probably very silly thing: Generate a shell script which will recreate the
+current herbstluft layout, The idea is that you get everything how you want it,
+run save_layouts, and arrange to run `sh ~/.config/herbstluftwm/_layout.sh` at
+some point in your autostart.
+
+Features:
+- Includes running programs
+- Automatically ignores tags with windows in them
+
+Limitations:
+- Doesn't attempt to preserve window within a frame
+- Assumes one program invocation per window
+"""
+
 from os.path import expanduser
 import shlex
 import subprocess
