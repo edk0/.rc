@@ -61,7 +61,7 @@ fi
 # class=URxvt instance=urxvt-irc
 if [ -z "$no_tag_1" ]; then
   herbstclient rule once maxage=20 class=URxvt instance=urxvt-irc tag=1 index=11
-  nohup urxvt -cd /home/edk -name urxvt-irc -e mosh vimes -- tmux attach -t irc >/dev/null 2>&1 &
+  nohup urxvt -cd /home/edk -name urxvt-irc -e mosh vimes -- tmux new -t irc >/dev/null 2>&1 &
 fi
 
 # class=Firefox instance=Navigator
