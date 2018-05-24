@@ -11,7 +11,7 @@ import sys
 
 HOSTS_WHAT_ARE_VIDEOS_PROBABLY = {
     'youtube.com', 'www.youtube.com',
-    'twitch.tv',
+    'twitch.tv', 'www.twitch.tv',
 }
 
 
