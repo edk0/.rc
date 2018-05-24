@@ -15,6 +15,8 @@ Limitations:
 - Assumes one program invocation per window
 """
 
+import clize
+from clize import converters
 from os.path import expanduser
 import shlex
 import subprocess
@@ -86,8 +88,23 @@ def hook_for_request(r, *extra):
 tag_map = {}
 
 
-def create_windows(rs):
+def create_windows(rs, unconditional=False):
     ol = []
+    def emit(x, *, indent=0):
+        ol.append('  ' * indent + x)
+    def emit_conditionally(req, yes=[], no=[], *, indent=0):
+        if unconditional:
+            for l in yes:
+                emit(l, indent=indent)
+            return
+        emit(f'if [ -z "$no_tag_{tag_map[req.tag]}" ]; then', indent=indent)
+        for l in yes:
+            emit(l, indent=indent+1)
+        if no:
+            emit('else', indent=indent)
+            for n in no:
+                emit(n, indent=indent+1)
+        emit('fi', indent=indent)
     rulegroups = {}
     for req in rs:
         if req.rules not in rulegroups:
@@ -108,46 +125,46 @@ def create_windows(rs):
     first = True
     for rule, req in rl:
         if not first:
-            ol.append('')
+            emit('')
         first = False
-        ol.append(f"# {' '.join(sorted(rule))}")
+        emit(f"# {' '.join(sorted(rule))}")
         if len(req) == 1:
             req = req[0]
-            ol.append(f'if [ -z "$no_tag_{tag_map[req.tag]}" ]; then')
-            ol.append('  ' + quote(hook_for_request(req)))
-            ol.append('  ' + req.create_cmd())
-            ol.append('fi')
+            emit_conditionally(req, [
+                quote(hook_for_request(req)),
+                req.create_cmd(),
+            ])
             continue
         reactors += 1
         reactorname = f"_reactor{reactors}"
         head, *react = req
-        ol.append('herbstclient --idle | while read hook name extra; do')
-        ol.append('  if [ "$hook" != rule ]; then continue; fi')
-        ol.append('  case "$name" in')
+        emit('herbstclient --idle | while read hook name extra; do')
+        emit('  if [ "$hook" != rule ]; then continue; fi')
+        emit('  case "$name" in')
         for i, r in enumerate(react):
             ol.append(f"    {reactorname}_hook{i})")
             if i + 1 < len(react):
-                ol.append(f'      if [ -z "$no_tag_{tag_map[r.tag]}" ]; then')
-                ol.append('        ' + quote(hook_for_request(r, f"hook={reactorname}_hook{i+1}")))
-                ol.append('        ' + r.create_cmd())
-                ol.append('      else')
-                ol.append('        ' + quote(['herbstclient', 'emit_hook', 'rule', f"{reactorname}_hook{i+1}"]))
-                ol.append('      fi')
+                emit_conditionally(r, [
+                    quote(hook_for_request(r, f"hook={reactorname}_hook{i+1}")),
+                    r.create_cmd(),
+                ], [
+                    quote(['herbstclient', 'emit_hook', 'rule', f"{reactorname}_hook{i+1}"])
+                ], indent=3)
             else:
-                ol.append(f'      if [ -z "$no_tag_{tag_map[r.tag]}" ]; then')
-                ol.append('        ' + quote(hook_for_request(r)))
-                ol.append('        ' + r.create_cmd())
-                ol.append('      fi')
-                ol.append('      break')
-            ol.append('    ;;')
-        ol.append('  esac')
-        ol.append('done &')
-        ol.append(f'if [ -z "$no_tag_{tag_map[head.tag]}" ]; then')
-        ol.append('  ' + quote(hook_for_request(head, f"hook={reactorname}_hook0")))
-        ol.append('  ' + head.create_cmd())
-        ol.append('else')
-        ol.append('  ' + quote(['herbstclient', 'emit_hook', 'rule', f"{reactorname}_hook0"]))
-        ol.append('fi')
+                emit_conditionally(r, [
+                    quote(hook_for_request(r)),
+                    r.create_cmd(),
+                ], indent=3)
+                emit('break', indent=3)
+            emit(';;', indent=2)
+        emit('  esac')
+        emit('done &')
+        emit_conditionally(head, [
+            quote(hook_for_request(head, f"hook={reactorname}_hook0")),
+            head.create_cmd(),
+        ], [
+            quote(['herbstclient', 'emit_hook', 'rule', f"{reactorname}_hook0"]),
+        ])
     return '\n'.join(ol)
 
 
@@ -158,6 +175,18 @@ def tag_setup(tag, layout):
     ol.append('else')
     ol.append('  ' + quote(['herbstclient', 'load', tag, layout]))
     ol.append('fi')
+    return '\n'.join(ol)
+
+
+def tag_wipe(tag, layout):
+    ol = []
+    if tag is None:
+        t = ''
+    else:
+        t = ' ' + shlex.quote(tag)
+    _n = shlex.quote('\n')
+    ol.append(f"herbstclient dump{t} | tr -sc xa-f0-9 {_n} | grep ^0x | xargs -L1 herbstclient close")
+    ol.append(quote(['herbstclient', 'load', tag, layout]))
     return '\n'.join(ol)
 
 
@@ -203,8 +232,8 @@ def parse_hc_dump(tag, si, index=''):
         return rl + rr, f"({t} {layout} {left} {right})"
 
 
-def main():
-    with open(expanduser('~/.config/herbstluftwm/_layout.sh'), 'w') as f:
+def main(output: converters.file(mode='w') = expanduser('~/.config/herbstluftwm/_layout.sh')):
+    with output as f:
         tags = hc('tag_status').split('\t')[1:-1]
         rs = []
         for i, t in enumerate(tags, start=1):
@@ -217,5 +246,18 @@ def main():
         print(create_windows(rs), file=f)
 
 
+def one(tag: str = None,
+        output: converters.file(mode='w') = '-'):
+    if tag is None:
+        tag = hc('attr', 'tags.focus.name')
+    dump = hc('dump', tag)
+    rl, layout = parse_hc_dump(tag, iter(dump))
+    for req in rl:
+        del req.consequences[0]
+    with output as f:
+        print(tag_wipe(None, layout), file=f)
+        print(create_windows(rl, unconditional=True), file=f)
+
+
 if __name__ == '__main__':
-    main()
+    clize.run(main, alt=(one,))
