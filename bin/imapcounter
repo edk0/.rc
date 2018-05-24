@@ -27,7 +27,7 @@ def main():
                     if stats != last:
                         print(f"{stats['MESSAGES']} {stats['UNSEEN']}", flush=True)
                     last = stats
-                    time.sleep(2)
+                    time.sleep(1)
         except (OSError, imaplib.IMAP4.error) as e:
             time.sleep(5)
 
