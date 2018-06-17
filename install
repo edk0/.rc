@@ -38,6 +38,7 @@ targets = (
    )}
 
    { link_as .cvsignore ignore }
+   { link_file .ctags }
    { link_file .esrc }
    { link_file .gitconfig }
    { link_file .profile }
