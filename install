@@ -179,8 +179,7 @@ fn get_firefox_profile {
 #####
 
 fn dbg x {
-   let (r=<=$x) { echo \$ $^x\t-\> $^r >[1=2] }
-   return $r
+   let (r=<=$x) { echo \$ $^x\t-\> $^r >[1=2]; return $r }
 }
 
 debugme = @ {
