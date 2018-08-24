@@ -76,15 +76,6 @@ alias up   ssh upload
 alias vi   $EDITOR
 alias svi  sudoedit
 
-# git is stupid
-fn git cmd a {
-	if {~ $cmd commit} {
-		command git commit -v $a
-	} {
-		command git $cmd $a
-	}
-}
-
 fn mutt account a {
 	command mutt -F ~/.mutt/$account $a
 }
@@ -156,6 +147,14 @@ local (cmds = (
 		return sudo -H -u $1 -E $SHELL
 	} {
 		return sudo -H -E $SHELL
+	}
+}
+
+%makealias git @ {
+	if {[ $1 \= commit ]} {
+		return git commit -v $*(2 ...)
+	} {
+		return git $*
 	}
 }
 
