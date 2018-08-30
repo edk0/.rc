@@ -67,8 +67,9 @@ fn command name args { local (fn-$name=) {$name $args} }
 alias ls   ls   --color\=auto
 alias grep grep --color\=auto
 
-alias l    ls -CF
-alias ll   ls -CFA
+alias l   ls -CF
+alias ll  ls -CFA
+
 alias hc   herbstclient
 alias q    exit
 alias tt   tee /dev/tty
@@ -131,7 +132,7 @@ local (cmds = (
 	stdbuf
 	sudo
 	time
-)) for (cmd=$cmds) { aliasr $cmd $cmd }
+)) for (cmd=$cmds) { aliasc $cmd $cmd }
 
 # 'env a\=b c\=d command` should expand command as an alias.
 %makealias env <={

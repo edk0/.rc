@@ -81,7 +81,7 @@ fn alias name args {
 		%makealias $name @ { return $args $* }
 	}
 }
-fn aliasr name args {
+fn aliasc name args {
 	if {~ $args ()} {
 		%makealias $name
 	} {
