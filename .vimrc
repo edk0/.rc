@@ -53,11 +53,12 @@ set autoindent copyindent preserveindent
 
 set tabstop=4 softtabstop=4 shiftwidth=4
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
-autocmd FileType python,rst,markdown,yaml,html set expandtab
+autocmd FileType python,rst,markdown,yaml,html,puppet set expandtab
 
 " specific indent things
 autocmd FileType markdown,yaml setl ts=2 sts=2 sw=2
 autocmd FileType groovy setl ts=2 sts=2 sw=2
+autocmd FileType puppet setl ts=2 sts=2 sw=2
 autocmd FileType es,rst setl ts=3 sts=3 sw=3
 
 " specific format things
