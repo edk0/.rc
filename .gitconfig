@@ -19,3 +19,5 @@
 	fsckobjects = true
 [commit]
 	gpgSign = true
+[rerere]
+	enabled = true
