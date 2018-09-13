@@ -10,6 +10,8 @@ set statusline=%f:%l%m%=%l,%v\ %P\ "trail
 let g:python_host_prog = '/usr/bin/python2.7'
 let g:python3_host_prog = '/usr/local/bin/python3.5'
 
+set shell=sh
+
 set path=.,**
 
 nnoremap <silent> vc :MundoToggle<CR>
