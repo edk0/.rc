@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 import json
 from os.path import expanduser
 import requests
+from requests.exceptions import RequestException
 import socket
 import subprocess
 import sys
@@ -16,7 +17,10 @@ HOSTS_WHAT_ARE_VIDEOS_PROBABLY = {
 
 
 def get_content_type(url):
-    r = requests.head(url, allow_redirects=True)
+    try:
+        r = requests.head(url, allow_redirects=True)
+    except RequestException:
+        return 'unknown/unknown'
     url = urlparse(r.url)
     if url.netloc in HOSTS_WHAT_ARE_VIDEOS_PROBABLY:
         return 'video/x-ytdl'
@@ -46,7 +50,10 @@ def main(argv):
     ct = get_content_type(argv[1])
     typ, _, subtype = ct.partition('/')
     if typ in ('video', 'audio'):
-        enqueue(argv[1])
+        try:
+            enqueue(argv[1])
+        except Exception:
+            navigate(argv[1])
     else:
         navigate(argv[1])
 
