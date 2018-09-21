@@ -47,8 +47,9 @@ targets = (
    { ensure_directory .vim-tmp }
    { ensure_directory .vim-undo }
    { link_file .xbindkeysrc }
+   { link_file .xinitrc }
    { link_file .Xresources }
-   { link_file .xsessionrc }
+   { link_as .xsessionrc .xinitrc }
 
    { ensure_directory bin }
    { ensure_directory src }

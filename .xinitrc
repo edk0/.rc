@@ -1,4 +1,2 @@
 setxkbmap -option compose:menu
 xrdb .Xresources
-xbindkeys
-urxvtd &
