@@ -64,6 +64,19 @@ for (v = path home) {
 # run a command even if a function by the same name exists
 fn command name args { local (fn-$name=) {$name $args} }
 
+fn ? v {
+	local(r2=) {
+		# Replace whitespace with visible characters.
+		for (rr = $($v)) {
+			rr = `` '' {sed -z 's,\n,'^\e^'[34m\\n'^\e^'[0m,g'<<<$rr}
+			rr = `` '' {sed -z 's,\t,'^\e^'[34m\\t'^\e^'[0m,g'<<<$rr}
+			rr = `` '' {sed -z 's, ,'^\e^'[34m_'^\e^'[0m,g'<<<$rr}
+			r2 = $r2 $rr
+		}
+		echo '# '^\e[0m^$^r2
+	}
+}
+
 alias ls   ls   --color\=auto
 alias grep grep --color\=auto
 
