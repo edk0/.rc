@@ -27,7 +27,7 @@ set secure
 
 set hidden
 set laststatus=2
-set modeline
+set modeline modelines=5
 set mouse=a
 set number
 set scrolloff=1
