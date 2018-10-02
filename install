@@ -148,15 +148,18 @@ fn ensure_file n f {
 # being copy_file'd
 fn preprocess_ssh_conf n f {
    fn include_ssh_conf {
-      let (line = <={%read}) \
+      let (line = <={%read}; host_or_match = 'Host *') \
       while {! result $#line} {
          stripped = `` \n {echo $line | sed 's/^\s\+//'}
+         if {~ $stripped Host\ * Match\ *} {
+            host_or_match = $line
+         }
          include = <= {~~ $stripped Include\ *}
          if {! result $#include} {
             if {! ~ $include /*} {include = $HOME/.ssh/$include}
             echo \# Begin $line
             include_ssh_conf < $include
-            echo 'Host *'
+            echo $host_or_match
             echo \# End $line
          } {
             echo $line
