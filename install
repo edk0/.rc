@@ -20,8 +20,7 @@ DEBUG=no
 # They're defined immediately below. They take care of their own
 # rollback-ing.
 targets = (
-   { ensure_directory .config/git }
-   { link_as .config/git/ignore ignore }
+   { link_file .config/git }
    { link_file .config/herbstluftwm }
    { link_file .config/mpv }
    { link_name .config/nvim ../.vim }
@@ -40,7 +39,6 @@ targets = (
    { link_as .cvsignore ignore }
    { link_file .ctags }
    { link_file .esrc }
-   { link_file .gitconfig }
    { link_file .profile }
    { link_file .vim }
    { link_file .vimrc }

@@ -164,14 +164,6 @@ local (cmds = (
 	}
 }
 
-%makealias git @ {
-	if {[ $1 \= commit ]} {
-		return git commit -v $*(2 ...)
-	} {
-		return git $*
-	}
-}
-
 # mechanism for shells post-login to update their environments. new
 # interactive shells will update_env, sourcing this file again if the copy in
 # their environment is old.
