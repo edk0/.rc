@@ -7,7 +7,7 @@
 # cd-stack-depth + 1 (if cd-stack-depth is not set, then the stack becomes
 # unabounded).
 
-cd-stack-depth = 3
+cd-stack-depth = 11
 cd-stack = .
 cwd = `pwd
 
@@ -48,7 +48,9 @@ fn cd dir {
 	}
 
 	if {$&cd $dir} {
-		cd-stack = ($cwd $cd-stack( 1 ... $cd-stack-depth ))
+		if {! ~ $cwd $cd-stack(1) } {
+			cd-stack = ($cwd $cd-stack( 1 ... $cd-stack-depth ))
+		}
 		cwd = `pwd
 		echo $cwd >[1=2]
 	}
