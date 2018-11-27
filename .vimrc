@@ -75,7 +75,8 @@ nnoremap gr :Unite -start-insert grep:.:-isR<CR>
 nnoremap gt :UniteWithCursorWord grep:.:-isR<CR>
 
 " searching
-set ignorecase smartcase incsearch nohlsearch
+set ignorecase smartcase incsearch hlsearch
+nnoremap <Leader>h :nohlsearch<CR>
 
 " remove trailing whitespace; works on one line or selection
 noremap <silent> sw ms$:s/\s\+$//<CR>g`s
