@@ -1,0 +1,2 @@
+#!/bin/sh
+exec ssh -qT upload@vimes .txt
