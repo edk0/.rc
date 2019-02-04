@@ -140,7 +140,6 @@ fn ssh a {
 # these commands take commands as an argument; recursive-alias them to
 # themselves so said argument gets expanded if it's an alias.
 local (cmds = (
-	command
 	nohup
 	stdbuf
 	sudo
