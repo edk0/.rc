@@ -5,10 +5,13 @@ tar tf $1 | {
 	prefix = <={~~ $line */}
 	!result $#prefix && !grep -vqF $prefix ^ '/' && echo extracting to $prefix >[1=2]
 } && tar xf $1 || {
-	(name _) = <={~~ $1 *.tar.* *.*}
+	(name _) = <={~~ $1 *.tar.* *.tar *.tbz2 *.tgz *.txz *}
 	if {result $#name} {
 		echo can\'t work out the name >[1=2]
 		exit 1
+	}
+	if {~ $name $1} {
+		name = $name'_'
 	}
 	mkdir $name || exit 1
 	echo extracting to $name >[1=2]
