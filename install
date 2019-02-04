@@ -280,7 +280,7 @@ fn relpath f {
 # Return the path to the backup directory, creating it if necessary
 fn backup_dir {
    if {result $#backup_dir} {
-      backup_dir=`` \n {mktemp -d -p $HOME .edk.backup-XXXXXXXX}
+      backup_dir=`` \n {mktemp -d $HOME/.edk.backup-XXXXXXXX}
    }
    result $backup_dir
 }
