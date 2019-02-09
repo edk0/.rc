@@ -330,9 +330,12 @@ uninstall
 
 if {result $#uninst} {
    echo Updating git modules...
+   if {~ $DEBUG no} {
+      git_opts = --quiet
+   }
    fork {
       cd $installpath
-      git submodule update --init --recursive --quiet
+      git submodule update --init --recursive $git_opts
    } || {
       echo Not installing, git errored
       exit 1
