@@ -20,5 +20,7 @@
 [commit]
 	gpgSign = true
 	verbose = 1
+[rebase]
+	autoStash = true
 [rerere]
 	enabled = true
