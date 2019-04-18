@@ -92,6 +92,7 @@ autocmd FileType * autocmd BufWrite mkview|exe "norm!ms"|keepj %s/\s\+$//e|exe "
 set cursorline
 colorscheme apprentice
 hi Comment ctermbg=NONE ctermfg=213 guibg=NONE guifg=#ff87ff cterm=NONE gui=NONE
+hi Todo ctermbg=NONE ctermfg=213 guibg=NONE guifg=#ff87ff cterm=reverse gui=reverse
 
 hi Unsullied ctermbg=NONE ctermfg=240 guibg=NONE guifg=#585858 cterm=NONE gui=NONE
 let g:unsullied_height=5
