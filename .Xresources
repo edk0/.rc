@@ -1,6 +1,6 @@
 URxvt.saveLines: 12000
 
-URxvt.font: xft:DejaVu Sans Mono:pixelsize=10:antialias=true:hinting=true
+URxvt.font: xft:Fira Code:pixelsize=11:antialias=true:hinting=true
 URxvt.letterSpace: -1
 
 URxvt.pointerBlank: true
