@@ -67,6 +67,10 @@ targets = (
    )}
 )
 
+make = (
+   .vim/bundle/vimproc.vim
+)
+
 fn optional targets {
    for (target=$targets) { r=<=$target || break }
    if {! result $r} {echo : optional target failed: $r}
@@ -346,9 +350,10 @@ if {result $#uninst} {
    echo Making things...
    fork {
       cd $installpath
-      for (f = `` \n {find . -type f -name Makefile}) {
+      for (f = $make) {
+         echo $f
          fork {
-            cd `` \n {dirname $f}
+            cd $f
             make || exit 1
          } || exit 1
       }
