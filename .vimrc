@@ -41,6 +41,7 @@ let g:c_syntax_for_h=1
 filetype plugin indent on
 syntax enable
 
+set nojoinspaces
 set formatoptions=tcroq
 if version >= 704
 	set formatoptions+=j
