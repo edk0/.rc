@@ -9,6 +9,7 @@ set statusline=%f:%l%m%=%l,%v\ %P\ "trail
 
 let g:python_host_prog = '/usr/bin/python2.7'
 let g:python3_host_prog = '/usr/local/bin/python3.5'
+let g:mundo_prefer_python3 = 1
 
 set shell=sh
 
