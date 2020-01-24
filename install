@@ -302,13 +302,13 @@ fn prepare_target n f {
                backuppath = <={backup_dir} ^ /$n
                mkdir -p `` \n {dirname $backuppath}
                mv $HOME/$n $backuppath
-               $f
+               $f || return 'install '^$n^' returned nonzero'
             } {
                echo error: $HOME/$n exists
                return 'file exists'
             }
          } {
-            $f
+            $f || return 'install '^$n^' returned nonzero'
          }
       }
       f = ()
