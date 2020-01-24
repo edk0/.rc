@@ -37,6 +37,16 @@ targets = (
       )}
    )}
 
+   { with_loop python { result (
+      3.4 3.5 3.6 3.7 3.8 3.9
+   )} (
+      { ensure_directory .local/lib/python$python/site-packages }
+      { link_as .local/lib/python$python/site-packages/usercustomize.py usercustomize.py }
+      { optional (
+         { link_as Library/Python/$python/lib/python/site-packages/usercustomize.py usercustomize.py }
+      )}
+   )}
+
    { link_as .cvsignore ignore }
    { link_file .ctags }
    { link_file .esrc }
@@ -75,6 +85,19 @@ fn optional targets {
    for (target=$targets) { r=<=$target || break }
    if {! result $r} {echo : optional target failed: $r}
    return 0
+}
+
+fn with_loop name value targets {
+   let (r=) {
+      catch @ e args { r = $args } { value = <=$value }
+      result $r || return $r
+   }
+   for (v=$value) {
+      local (($name)=$v) {
+         for (target=$targets) { r=<=$target || break }
+      }
+   }
+   return $r
 }
 
 fn with_local name value targets {
