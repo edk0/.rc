@@ -20,6 +20,7 @@ DEBUG=no
 # They're defined immediately below. They take care of their own
 # rollback-ing.
 targets = (
+   { ensure_directory .config }
    { link_file .config/bpython }
    { link_file .config/git }
    { link_file .config/herbstluftwm }
