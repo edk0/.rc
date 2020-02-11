@@ -17,6 +17,9 @@ let loaded_netrwPlugin = 1
 " es isn't shelly enough for fugitive (or, being honest, anyone else)
 set shell=sh
 
+" work around a thing with kitty
+let &t_ut=''
+
 set path=.,**
 
 nnoremap <silent> vc :MundoToggle<CR>
