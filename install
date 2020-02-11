@@ -25,6 +25,7 @@ targets = (
    { link_file .config/git }
    { link_file .config/herbstluftwm }
    { link_file .config/kitty }
+   { generate .config/kitty/colorscheme.conf {xrtok < .Xresources} }
    { link_file .config/mpv }
    { link_name .config/nvim ../.vim }
 
@@ -143,6 +144,13 @@ fn copy_file n f {
 
 fn copy_as n t f {
    prepare_target $n {cp $t $HOME/$n && $f}
+}
+
+# Generate a file by redirecting a command into it
+fn generate n c {
+   local (path=($installpath $path)) {
+      prepare_target $n {$c > $n}
+   }
 }
 
 # Ensure a name relative to $HOME is a directory. Can't be forced if
