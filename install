@@ -24,6 +24,7 @@ targets = (
    { link_file .config/bpython }
    { link_file .config/git }
    { link_file .config/herbstluftwm }
+   { link_file .config/kitty }
    { link_file .config/mpv }
    { link_name .config/nvim ../.vim }
 

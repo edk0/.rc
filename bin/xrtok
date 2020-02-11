@@ -1,0 +1,41 @@
+#!/bin/sh
+
+map() {
+	case "$1" in
+	color1)
+		# red
+		echo 10 color1
+		echo  9 bell_border_color
+		;;
+	color4)
+		# blue
+		echo 10 color4
+		echo  7 active_border_color
+		;;
+	color*)
+		echo 10 "$1"
+		;;
+	foreground)
+		echo  1 cursor
+		echo  3 foreground
+		echo  6 selection_background
+		;;
+	background)
+		echo  2 cursor_text_color
+		echo  4 background
+		echo  5 selection_foreground
+		echo  8 inactive_border_color
+		;;
+	*)
+		;;
+	esac
+}
+
+sed -e 's,^\*\.\([a-z0-9]*\):[ \t]*\(#[a-f0-9]*\)$,\1 \2,' -e 't' -e 'd' | \
+		while read -r name value; do
+			map "$name" | while read -r key; do
+				echo "$key" "$value"
+			done
+		done | \
+		sort -k 1,1n -k 2,2 | \
+		sed -e 's,^[0-9]* ,,'
