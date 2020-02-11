@@ -11,6 +11,10 @@ let g:python_host_prog = '/usr/bin/python2.7'
 let g:python3_host_prog = '/usr/local/bin/python3'
 let g:mundo_prefer_python3 = 1
 
+" fuck netrw.
+let loaded_netrwPlugin = 1
+
+" es isn't shelly enough for fugitive (or, being honest, anyone else)
 set shell=sh
 
 set path=.,**
@@ -49,9 +53,6 @@ if version >= 704
 	set formatoptions+=j
 endif
 set nrformats=hex
-
-" fuck netrw.
-let loaded_netrwPlugin = 1
 
 set autoindent copyindent preserveindent
 
