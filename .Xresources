@@ -27,8 +27,8 @@ urxvt-irc.boldFont:
 urxvt-irc.intensityStyles: true
 urxvt-irc.scrollBar: false
 
-! theme:
-! http://terminal.sexy/#ICAdpqKMICAd1zc3YKw5z7AXZoThuFTUH62DpqKMfXpo9CsrXcky7bgJT0__yFXyH8yk_vvs
+! based on
+! https://atelierbram.github.io/syntax-highlighting/atelier-schemes/#dune
 
 ! special
 *.foreground:   #a6a28c
