@@ -25,7 +25,6 @@ targets = (
    { link_file .config/git }
    { link_file .config/herbstluftwm }
    { link_file .config/kitty }
-   { generate .config/kitty/colorscheme.conf {xrtok < .Xresources} }
    { link_file .config/mpv }
    { link_name .config/nvim ../.vim }
 
@@ -74,10 +73,12 @@ targets = (
       { ensure_directory .ssh }
       { copy_file .ssh/config }
       { ensure_file .ssh/config.local }
-      # an extremely non-general thing that replaces 'Include' directives
-      # with their referents if ssh doesn't support Include yet
-      { preprocess_ssh_conf .ssh/config }
    )}
+)
+
+post_install = (
+   { xrtok < $installpath/.Xresources > $installpath/.config/kitty/colorscheme.conf }
+   { preprocess_ssh_conf ~/.ssh/config }
 )
 
 make = (
@@ -146,13 +147,6 @@ fn copy_as n t f {
    prepare_target $n {cp $t $HOME/$n && $f}
 }
 
-# Generate a file by redirecting a command into it
-fn generate n c {
-   local (path=($installpath $path)) {
-      prepare_target $n {$c > $n}
-   }
-}
-
 # Ensure a name relative to $HOME is a directory. Can't be forced if
 # it's not a directory; uninstalling would have to remove the dir
 # again, which I don't like.
@@ -182,9 +176,7 @@ fn ensure_file n f {
 }
 
 # unbreak ssh config if there is no Include
-# this doesn't do its own rollback and depends on .ssh/config
-# being copy_file'd
-fn preprocess_ssh_conf n f {
+fn preprocess_ssh_conf n {
    fn include_ssh_conf {
       let (line = <={%read}; host_or_match = 'Host *') \
       while {! result $#line} {
@@ -206,11 +198,14 @@ fn preprocess_ssh_conf n f {
       }
    }
    output = `` \n {ssh -o Include >[2=1]}
-   ~ $output *'Bad configuration option'* || return
-   echo ! $n
-   scratch = `` \n {mktemp $HOME/$n.XXXXXXXXXX}
-   mv $HOME/$n $scratch
-   include_ssh_conf < $scratch > $HOME/$n
+   ~ $output *'Bad configuration option'* || {
+      echo \# SSH client supports Include
+      return
+   }
+   echo \# Preprocessing $n
+   scratch = `` \n {mktemp $n.XXXXXXXXXX}
+   mv $n $scratch
+   include_ssh_conf < $scratch > $n
    rm $scratch
 }
 
@@ -402,6 +397,17 @@ if {result $#uninst} {
             rollback
             echo failed to install: $r
             exit $r
+         }
+      }
+   }
+
+   for (post=$post_install) {
+      local (path=($installpath/bin $path)) {
+         if {! $post} {
+            echo error occurred, uninstalling!
+            rollback
+            echo failed to execute: $post
+            exit 1
          }
       }
    }
