@@ -4,16 +4,16 @@ map() {
 	case "$1" in
 	color1)
 		# red
-		echo 10 color1
+		echo 11 color1
 		echo  9 bell_border_color
 		;;
 	color4)
 		# blue
-		echo 10 color4
+		echo 14 color4
 		echo  7 active_border_color
 		;;
 	color*)
-		echo 10 "$1"
+		echo 1"${1#color}" "$1"
 		;;
 	foreground)
 		echo  1 cursor
