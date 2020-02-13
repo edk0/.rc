@@ -1,0 +1,6 @@
+#!/bin/sh
+file=$(mktemp) || exit 1
+cat > "$file" || { rm -f "$file"; exit 1; }
+"${VISUAL:-$EDITOR}" "$file" </dev/tty >/dev/tty 2>/dev/tty || { rm -f "$file"; exit 1; }
+cat "$file" || { rm -f "$file"; exit 1; }
+rm -f "$file"
